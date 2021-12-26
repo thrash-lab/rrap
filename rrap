@@ -1,0 +1,120 @@
+#!/usr/bin/env python3
+
+"""
+ Copyright 2020, Conner Kojima <cykojima@usc.edu>
+
+ This file is the main driver of rrap, a bionformatics pipeline that
+ provides bam.stats files and rpkm visualization given reference 
+ genome and metagenome directories.
+
+"""
+
+import os
+import argparse
+import subprocess
+from pathlib import Path
+import concatenator
+import indexer
+import read_recruiter
+import visualizer
+
+
+def main():
+    c = Controller()
+    c.run()
+
+
+class Controller:
+    def __init__(self):
+        self.p = argparse.ArgumentParser(prog="RRAP",
+                                         description="Run read recruitment on a set of cleaned fna files")
+
+        # argument groups
+        self.inputs = None
+        self.outputs = None
+        self.optional = None
+        self.subcommands = None
+        self.arg_groups = []
+
+        # args
+        self.args = None
+
+        # pipes
+        self.concatenator = None
+        self.indexer = None
+        self.read_recruiter = None
+        self.visualizer = None
+
+        # intermediate products
+        self.cat_file_path = None
+        self.index_dir_path = None
+
+        self.rpkm_heater_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rpkm_heater.py")
+        self.stats_dir_path = None
+
+    def run(self):
+        self.add_arguments()
+
+        print("---------making output dir if needed-------------")
+        self.set_output_dir()
+
+        if self.args.crg:
+            self.cat_file_path = self.args.crg
+        else:
+            print("---------concatenating reference genomes-------------")
+            self.concatenator = concatenator.Concatenator(self.args)
+            self.cat_file_path = self.concatenator.concatenate()
+
+        print("---------indexing reference genomes-------------")
+        self.indexer = indexer.Indexer(self.args, self.index_dir_path, self.cat_file_path)
+        self.indexer.index()
+
+        print("---------read recruitment and data transform-------------")
+        self.read_recruiter = read_recruiter.ReadRecruiter(self.args, self.index_dir_path,
+                                                           self.cat_file_path, self.stats_dir_path)
+        self.read_recruiter.read_recruit()
+        # self.bamM
+
+        print("---------rpkm_heater-------------")
+        self.visualizer = visualizer.Visualizer(self.args, self.rpkm_heater_path, self.stats_dir_path)
+        self.visualizer.visualize()
+
+        # TODO V2
+        # self.fastq_dump()
+        # self.clean()
+
+    def add_arguments(self):
+        # TODO specify argument groups
+        self.inputs = self.p.add_argument_group("## input arguments")
+        self.outputs = self.p.add_argument_group("## output arguments")
+
+        self.arg_groups.extend([self.inputs, self.outputs, self.optional])
+
+        # Add the arguments
+        self.inputs.add_argument('-i', help='text file of all dir paths that contain cleaned metaG fna files', required=True)
+        self.inputs.add_argument('-crg', help=' path for concatenated reference genome fa file', required=False)
+        self.inputs.add_argument('-rg', help='input directory for reference genomes', required=True)
+        self.outputs.add_argument('-o', help='output directory path', required=True)
+        self.inputs.add_argument('-n', help='name of the project', required=True)
+        self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes', required=False)
+        self.inputs.add_argument('-sort_samples', help='txt file of sorted samples', required=False)
+        self.inputs.add_argument("--threads", help='number of available threads', required=False)
+
+        self.args = self.p.parse_args()
+        
+
+    def set_output_dir(self):
+        if self.args.o:
+            # create output dir and create inner stats and index dir
+            self.stats_dir_path = os.path.join(self.args.o, "stats_dir_" + self.args.n)
+            self.index_dir_path = os.path.join(self.args.o, "index_dir", self.args.n)
+            if not os.path.isdir(self.args.o):
+                subprocess.run("mkdir " + self.args.o, shell=True)
+            if not os.path.isdir(self.stats_dir_path):
+                subprocess.run("mkdir " + self.stats_dir_path, shell=True)
+            if not os.path.isdir(self.index_dir_path):
+                subprocess.run("mkdir " + os.path.join(self.args.o, "index_dir"), shell=True)
+
+
+if __name__ == "__main__":
+    main()
