@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: rrap
+Version: 0.2.1
+Summary: A metagenomic read recruitment data pipeline
+Home-page: https://github.com/Kojiconner/rrap_metag_pkg/
+Author: Conner Kojima
+Author-email: cykojima@usc.edu
+License: MIT
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7.3
+License-File: LICENSE
+
+UNKNOWN
+

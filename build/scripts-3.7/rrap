@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!python
 
 """
  Copyright 2020, Conner Kojima <cykojima@usc.edu>
@@ -13,10 +13,10 @@ import os
 import argparse
 import subprocess
 from pathlib import Path
-import concatenator
-import indexer
-import read_recruiter
-import visualizer
+from rrap import concatenator
+from rrap import indexer
+from rrap import read_recruiter
+from rrap import visualizer
 
 
 def main():

@@ -26,7 +26,7 @@ class Visualizer:
         if self.args.sort_samples:
             sort_samples_addon = "-sort_samples {0}".format(self.args.sort_samples)
 
-        cmd = "python3 {0} -map -i {1} -o {2} -project {3} {4} {5}".format(self.rpkm_heater_path,
+        cmd = "rpkm_heater -map -i {1} -o {2} -project {3} {4} {5}".format(self.rpkm_heater_path,
                                                                            self.stats_dir_path,
                                                                            rpkm_output_dir,
                                                                            self.args.n,
