@@ -57,7 +57,6 @@ class ReadRecruiter:
             # create helpful variables
             acc_path = os.path.join(output_dir_path, os.path.basename(acc))
 
-            print("checking if file exists: ", os.path.expanduser(os.path.join(output_dir_path, "{0}.bam.stats".format(os.path.basename(acc)))))
             # only run bowtie2 if .bam.stats file doesn't exist
             if not os.path.exists(os.path.expanduser(os.path.join(output_dir_path, "{0}.bam.stats".format(os.path.basename(acc))))):
                 # run read recruitment
@@ -70,7 +69,6 @@ class ReadRecruiter:
                 command = 'bowtie2 {3} -x "{0}" -1 "{2}-QUALITY_PASSED_R1.fastq" -2 ' \
                           '"{2}-QUALITY_PASSED_R2.fastq" ' \
                           '--no-unal -S "{2}.sam"'.format(index_path, acc_path, acc, threads_addon)
-                print("aligning reads: ", command)
                 subprocess.run(command, shell=True)
 
                 self.generate_stats_file(acc, output_dir_path)

@@ -27,7 +27,7 @@ class Concatenator:
                 self.combine_contigs(rf_path)
         else:
             # concatenate all ref genomes into one file
-            subprocess.run("cat {0} > {1}".format(os.path.join(self.args.rg, "*.fa"), self.cat_file_name))
+            subprocess.run("cat {0} > {1}".format(os.path.join(self.args.rg, "*"), self.cat_file_name), shell=True)
         return self.cat_file_name
 
     def combine_contigs(self, rf_path):

@@ -19,6 +19,7 @@ from rrap import read_recruiter
 from rrap import visualizer
 
 
+
 def main():
     c = Controller()
     c.run()
@@ -57,29 +58,37 @@ class Controller:
 
         print("---------making output dir if needed-------------")
         self.set_output_dir()
-
-        if self.args.crg:
-            self.cat_file_path = self.args.crg
-        else:
-            print("---------concatenating reference genomes-------------")
-            self.concatenator = concatenator.Concatenator(self.args)
-            self.cat_file_path = self.concatenator.concatenate()
+        self.cat_file_name = os.path.join(self.args.o, 'allgenomes_cat_{0}.fna'.format(self.args.n))
 
         if not self.args.index_pass:
+            if self.args.crg:
+                self.cat_file_path = self.args.crg
+            else:
+                print("---------concatenating reference genomes-------------")
+                self.concatenator = concatenator.Concatenator(self.args)
+                self.cat_file_path = self.concatenator.concatenate()
+
             print("---------indexing reference genomes-------------")
             self.indexer = indexer.Indexer(self.args, self.index_dir_path, self.cat_file_path)
             self.indexer.index()
+        else:
+            print("---------skipped indexing reference genomes-------------")
 
         if not self.args.rr_pass:
             print("---------read recruitment and data transform-------------")
             self.read_recruiter = read_recruiter.ReadRecruiter(self.args, self.index_dir_path,
                                                             self.cat_file_path, self.stats_dir_path)
             self.read_recruiter.read_recruit()
+        else:
+            print("---------skipped read recruitment and data transform-------------")
 
         if not self.args.vis_pass:
-            print("---------rpkm_heater-------------")
+            print("---------visualization-------------")
             self.visualizer = visualizer.Visualizer(self.args, self.rpkm_heater_path, self.stats_dir_path)
-            self.visualizer.visualize()
+            #self.visualizer.visualize()
+            self.visualizer.calculate_rpkm()
+        else:
+            print("---------skipped visualization-------------")
 
         # TODO V2
         # self.fastq_dump()
@@ -89,26 +98,23 @@ class Controller:
         # TODO specify argument groups
         self.inputs = self.p.add_argument_group("## input arguments")
         self.outputs = self.p.add_argument_group("## output arguments")
-        self.optional = self.p.add_argument_group("## options")
+        self.options = self.p.add_argument_group("## options")
 
         self.arg_groups.extend([self.inputs, self.outputs, self.optional])
 
         # Add the arguments
         self.inputs.add_argument('-i', help='text file of all dir paths that contain cleaned metaG fna files', 
-                                 required=True, metavar='path of input txt file')
+                                 required=True)
         self.inputs.add_argument('-crg', help=' path for concatenated reference genome fa file', 
-                                 required=False, metavar='path of concatenated genome fa file')
+                                 required=False)
         self.inputs.add_argument('-rg', help='input directory for reference genomes', 
-                                 required=True, metavar='input reference genome dir path')
+                                 required=True)
         self.outputs.add_argument('-o', help='output directory path', 
-                                  required=True, metavar='output dir path')
+                                  required=True)
         self.inputs.add_argument('-n', help='name of the project', required=True, metavar='project name')
-        self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes', required=False, 
-                                 metavar='genome sorted txt file')
-        self.inputs.add_argument('-sort_samples', help='txt file of sorted samples', required=False,
-                                 metavar='sample sorted txt file')
-        self.inputs.add_argument("--threads", help='number of available threads', required=False,
-                                 metavar='thread number')
+        self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes', required=False)
+        self.inputs.add_argument('-sort_samples', help='txt file of sorted samples', required=False)
+        self.inputs.add_argument("--threads", help='number of available threads', required=False)
 
         # specify optional args
         self.options.add_argument("--merge-contigs", default=False, dest='contig_merge',

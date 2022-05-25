@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='rrap',
-      version='0.2.4',
+      version='0.2.5',
       description='A metagenomic read recruitment data pipeline',
       url='https://github.com/Kojiconner/rrap_metag_pkg/',
       author='Conner Kojima',

@@ -1,6 +1,8 @@
 import subprocess
 import os
 from pathlib import Path
+import csv
+import pandas as pd
 
 
 class Visualizer:
@@ -35,6 +37,46 @@ class Visualizer:
 
         print("running: " + cmd)
         subprocess.run(cmd, shell=True)
+
+    def calculate_rpkm(self):
+
+        # df holds rpkm values with genome acc as the row names and metaG acc as the headers
+        df = pd.DataFrame()
+
+        # loop through files with bam.stats suffix in generated stats dir
+        for file in os.listdir(self.stats_dir_path):
+            if file.endswith(".bam.stats"):
+
+                # rpkm dict will hold rpkm values for single metaG
+                rpkm = {}
+                # read csv
+                entry = pd.read_csv(os.path.join(self.stats_dir_path, file), delimiter="\t", header=None)
+                # add headers to pd
+                entry.columns = ["genome", "gen_length", "r_mapped", "r_unmapped"]
+                # calculate total mapped reads
+                tot_reads = entry['r_mapped'].sum()
+
+                # specify metaG accession in dict
+                rpkm['ACC'] = [file[:-10]]
+
+                # specify rpkm values for each genome for this specific metaG
+                for i in range(len(entry['genome'])):
+                    if entry['genome'][i] != "*":
+                        rpkm[entry['genome'][i]] = \
+                            [entry['r_mapped'][i]/((entry['gen_length'][i]/1000)*(tot_reads/1000000))]
+
+                # convert dict to data frame and transpose
+                rpkm_df = pd.DataFrame(rpkm)
+                rpkm_df.set_index('ACC', inplace=True)
+                rpkm_df = rpkm_df.transpose()
+
+                # add rpkm data to overall dataframe
+                df = pd.concat([df, rpkm_df], axis=1, join='outer')
+
+        print(df)
+        rpkm_output_dir = os.path.join(self.args.o, "rpkm")
+        df.to_csv(os.path.join(rpkm_output_dir, self.args.n + "_rpkm_noLog.csv"), index_label='ACC')
+
 
     def calculate_coverage_and_depth(self):
         # TODO
