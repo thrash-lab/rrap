@@ -4,7 +4,7 @@
  Copyright 2020, Conner Kojima <cykojima@usc.edu>
 
  This file is the main driver of rrap, a bionformatics pipeline that
- generates bam.stats files and rpkm visualization given reference 
+ runs read recruitment and rpkm visualization given reference 
  genome and metagenome directories.
 
 """
@@ -90,9 +90,6 @@ class Controller:
         else:
             print("---------skipped visualization-------------")
 
-        # TODO V2
-        # self.fastq_dump()
-        # self.clean()
 
     def add_arguments(self):
         # TODO specify argument groups
@@ -115,6 +112,11 @@ class Controller:
         self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes', required=False)
         self.inputs.add_argument('-sort_samples', help='txt file of sorted samples', required=False)
         self.inputs.add_argument("--threads", help='number of available threads', required=False)
+        self.inputs.add_argument("-suffix", default="_pass_1.fastq", 
+                                  help="everything in metaG file name that is after the acc for the forward (R1) read files \n"
+                                  "e.g. (-QUALITY_PASSED_R1.fastq for <sample_acc>-QUALITY_PASSED_R1.fastq) \n" 
+                                  "Otherwise, RRAP assumes that the forward pass file name is formatted as <acc>_pass_1.fastq"
+                                  "NOTE: suffixes that contain a dash must specify '--' as an escape character e.g. '-suffix \"-- -QUALITY_PASSED_R1.fastq\"'")
 
         # specify optional args
         self.options.add_argument("--merge-contigs", default=False, dest='contig_merge',
