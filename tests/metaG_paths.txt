@@ -1,0 +1,3 @@
+/Users/connerkojima/thrash/cykojima/rrap/tests/metaGs/bowtie2_phage
+/Users/connerkojima/thrash/cykojima/rrap/tests/metaGs/chesapeake_bay 
+/Users/connerkojima/thrash/cykojima/rrap/tests/metaGs/columbia_river
