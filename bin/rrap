@@ -56,6 +56,11 @@ class Controller:
     def run(self):
         self.add_arguments()
 
+        if self.args.test:
+            pass
+        else:
+            pass
+
         print("---------making output dir if needed-------------")
         self.set_output_dir()
         self.cat_file_name = os.path.join(self.args.o, 'allgenomes_cat_{0}.fna'.format(self.args.n))
@@ -109,6 +114,7 @@ class Controller:
         self.outputs.add_argument('-o', help='output directory path', 
                                   required=True)
         self.inputs.add_argument('-n', help='name of the project', required=True, metavar='project name')
+
         self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes', required=False)
         self.inputs.add_argument('-sort_samples', help='txt file of sorted samples', required=False)
         self.inputs.add_argument("--threads", help='number of available threads', required=False)
@@ -119,6 +125,7 @@ class Controller:
                                   "NOTE: suffixes that contain a dash must specify '--' as an escape character e.g. '-suffix \"-- -QUALITY_PASSED_R1.fastq\"'")
 
         # specify optional args
+        self.options.add_argument("-test", default=False, dest="test", action='store_true', help='test that program runs properly')
         self.options.add_argument("--merge-contigs", default=False, dest='contig_merge',
                                   action='store_true', help="Concatenate contigs under individual organisms")
         self.options.add_argument("--skip-indexing", default=False, dest='index_pass',
