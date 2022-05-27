@@ -8,25 +8,74 @@ import os
 import subprocess
 from rrap import controller
 
-def test_main():
-    # use relative paths
-    dirname = os.path.dirname(__file__)
+class TestOutputs(unittest.TestCase):
 
-    with patch("sys.argv", ['rrap', 
-                            '-i',
-                            os.path.join(os.path.dirname(__file__), '..', 'tests', 'metaG_paths.txt'), 
-                            '-rg', 
-                            os.path.join(os.path.dirname(__file__), '..', 'tests', 'reference'), 
-                            '-o', 
-                            os.path.join(os.path.dirname(__file__), '..', 'tests', 'output'), 
-                            '-n', 
-                            'val', 
-                            '--merge-contigs', 
-                            '--extra-vis',
-                            '-suffix', 
-                            '_toy_R1.fastq']):
-        controller.main()
-        # unittest.Testcase.assertTrue(filecmp.cmp("first.doc","second.doc",shallow=False))
+    @classmethod
+    def setUpClass(cls):
+        super(TestOutputs, cls).setUpClass()
+
+        # use relative paths
+        bin_dir = os.path.dirname(__file__)
+        tests_dir = os.path.join(bin_dir, "..", 'tests')
+
+        # run through entire rrap pipeline
+        with patch("sys.argv", ['rrap', 
+                                '-i',
+                                os.path.join(tests_dir, 'metaG_paths.txt'), 
+                                '-rg', 
+                                os.path.join(tests_dir, 'reference'), 
+                                '-o', 
+                                os.path.join(tests_dir, 'output'), 
+                                '-n', 
+                                'test', 
+                                '--merge-contigs', 
+                                '--extra-vis',
+                                '-suffix', 
+                                '_toy_R1.fastq']):
+            controller.main()
+
+    def test_concatenator(self):
+        # use relative paths
+        bin_dir = os.path.dirname(__file__)
+        tests_dir = os.path.join(bin_dir, "..", 'tests')
+
+        val_concat = os.path.join(tests_dir, "output", "allgenomes_cat_val.fna")
+        test_concat = os.path.join(tests_dir, "output", "allgenomes_cat_test.fna")
+        self.assertTrue(os.path.isfile(test_concat))
+        self.assertTrue(filecmp.cmp(val_concat, test_concat, shallow=False))
+    
+    def test_indexer(self):
+        # use relative paths
+        bin_dir = os.path.dirname(__file__)
+        index_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'index')
+
+        # make sure all index files exist
+        extensions = [".1.bt2", ".2.bt2", ".3.bt2", ".4.bt2", ".rev.1.bt2", ".rev.2.bt2"]
+        for extension in extensions:
+            print('checking', os.path.join(index_dir, "test", "test{1}".format(extension)))
+            self.assertTrue(os.path.isfile("{0}test{1}".format(os.path.join(index_dir, "test/"), extension)))
+
+        # compare one of the index files to make sure it matches the expected output
+        val_index = os.path.join(index_dir, "val", "val.1.bt2")
+        test_index = os.path.join(index_dir, "test", "test.1.bt2")
+        self.assertTrue(filecmp.cmp(val_index, test_index, shallow=False))
+    
+    @classmethod
+    def tearDownClass(cls):
+        super(TestOutputs, cls).tearDownClass()
+
+        # use relative paths
+        bin_dir = os.path.dirname(__file__)
+        output_dir = os.path.join(bin_dir, "..", 'tests', 'output')
+
+        # remove concat file
+        subprocess.run('rm {0}'.format(os.path.join(output_dir, 'allgenomes_cat_test.fna')), shell=True)
+
+        # remove output dirs for test
+        dirs = ['bam/test', 'index/test', 'rpkm/test', 'stats/test']
+        for sub_dir in dirs:
+            subprocess.run('rm -rf {0}'.format(os.path.join(output_dir, sub_dir)), shell=True)
+
 
 if __name__ == "__main__":
-    test_main()
+    unittest.main()

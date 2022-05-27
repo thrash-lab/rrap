@@ -66,14 +66,14 @@ class Controller:
                 self.cat_file_path = self.concatenator.concatenate()
 
             print("---------indexing reference genomes-------------")
-            self.indexer = indexer.Indexer(self.args, self.index_dir_path, self.cat_file_path)
+            self.indexer = indexer.Indexer(self.args, os.path.join(self.index_dir_path, "val"), self.cat_file_path)
             self.indexer.index()
         else:
             print("---------skipped indexing reference genomes-------------")
 
         if not self.args.rr_pass:
             print("---------read recruitment and data transform-------------")
-            self.read_recruiter = read_recruiter.ReadRecruiter(self.args, self.index_dir_path,
+            self.read_recruiter = read_recruiter.ReadRecruiter(self.args, os.path.join(self.index_dir_path, "val"),
                                                                self.cat_file_path, self.stats_dir_path,
                                                                self.bam_dir_path)
             self.read_recruiter.read_recruit()
