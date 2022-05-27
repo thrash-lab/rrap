@@ -17,7 +17,6 @@ from rrap import read_recruiter
 from rrap import visualizer
 
 
-
 def main():
     c = Controller()
     c.run()
@@ -54,11 +53,6 @@ class Controller:
     def run(self):
         self.add_arguments()
 
-        if self.args.test:
-            pass
-        else:
-            pass
-
         print("---------making output dir if needed-------------")
         self.set_output_dir()
         self.cat_file_name = os.path.join(self.args.o, 'allgenomes_cat_{0}.fna'.format(self.args.n))
@@ -80,7 +74,8 @@ class Controller:
         if not self.args.rr_pass:
             print("---------read recruitment and data transform-------------")
             self.read_recruiter = read_recruiter.ReadRecruiter(self.args, self.index_dir_path,
-                                                            self.cat_file_path, self.stats_dir_path)
+                                                               self.cat_file_path, self.stats_dir_path,
+                                                               self.bam_dir_path)
             self.read_recruiter.read_recruit()
         else:
             print("---------skipped read recruitment and data transform-------------")
@@ -123,7 +118,6 @@ class Controller:
                                   "NOTE: suffixes that contain a dash must specify '--' as an escape character e.g. '-suffix \"-- -QUALITY_PASSED_R1.fastq\"'")
 
         # specify optional args
-        self.options.add_argument("-test", default=False, dest="test", action='store_true', help='test that program runs properly')
         self.options.add_argument("--merge-contigs", default=False, dest='contig_merge',
                                   action='store_true', help="Concatenate contigs under individual organisms")
         self.options.add_argument("--skip-indexing", default=False, dest='index_pass',
@@ -146,14 +140,29 @@ class Controller:
     def set_output_dir(self):
         if self.args.o:
             # create output dir and create inner stats and index dir
-            self.stats_dir_path = os.path.join(self.args.o, "stats_dir_" + self.args.n)
-            self.index_dir_path = os.path.join(self.args.o, "index_dir", self.args.n)
+            self.stats_dir_path = os.path.join(self.args.o, "stats", self.args.n)
+            self.index_dir_path = os.path.join(self.args.o, "index", self.args.n)
+            self.bam_dir_path = os.path.join(self.args.o, "bam", self.args.n)
+
+            # make output (if it does not exist)
             if not os.path.isdir(self.args.o):
                 subprocess.run("mkdir " + self.args.o, shell=True)
+
+            # make stats, index, and bam dir
+            if not os.path.isdir(os.path.join(self.args.o, "stats")):
+                subprocess.run("mkdir " + os.path.join(self.args.o, "stats"), shell=True)
+            if not os.path.isdir(os.path.join(self.args.o, "index")):
+                subprocess.run("mkdir " + os.path.join(self.args.o, "index"), shell=True)
+            if not os.path.isdir(os.path.join(self.args.o, "bam")):
+                subprocess.run("mkdir " + os.path.join(self.args.o, "bam"), shell=True)
+
+            # make project name specific dirs
             if not os.path.isdir(self.stats_dir_path):
                 subprocess.run("mkdir " + self.stats_dir_path, shell=True)
             if not os.path.isdir(self.index_dir_path):
-                subprocess.run("mkdir " + os.path.join(self.args.o, "index_dir"), shell=True)
+                subprocess.run("mkdir " + self.index_dir_path, shell=True)
+            if not os.path.isdir(self.bam_dir_path):
+                subprocess.run("mkdir " + self.bam_dir_path, shell=True)
 
 
 if __name__ == "__main__":

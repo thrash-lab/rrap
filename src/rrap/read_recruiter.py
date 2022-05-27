@@ -2,13 +2,13 @@ import subprocess
 import os
 from pathlib import Path
 
-
 class ReadRecruiter:
-    def __init__(self, args, index_dir_path, cat_file_path, stats_dir_path):
+    def __init__(self, args, index_dir_path, cat_file_path, stats_dir_path, bam_dir_path):
         self.args = args
         self.index_dir_path = index_dir_path
         self.cat_file_path = cat_file_path
         self.stats_dir_path = stats_dir_path
+        self.bam_dir_path = bam_dir_path
 
         if self.args.suffix[0:2] == "--":
             self.args.suffix = self.args.suffix[3:]
@@ -27,12 +27,15 @@ class ReadRecruiter:
                 tuple_list = self.find_acc(clean_dir_path)
 
                 print("Running read recruitment for dir: " + clean_dir_path)
-                self.align_reads(tuple_list, clean_dir_path, self.index_dir_path)
+                self.align_reads(tuple_list, clean_dir_path)
 
-                output_dir_path = os.path.join(clean_dir_path, "rrap_output_dir_" + self.args.n)
-                print("copying .bam.stats files to stats dir: " + clean_dir_path)
-                subprocess.run('cp {0} {1}'.format(os.path.join(output_dir_path, "*.bam.stats"),
-                                                   self.stats_dir_path), shell=True)
+                # local_stats_dir_path = os.path.join(clean_dir_path, "rrap_output_dir_" + self.args.n)
+
+                # print("copying .bam.stats files to stats dir: " + local_stats_dir_path)
+                # subprocess.run('cp {0} {1}'.format(os.path.join(local_stats_dir_path, "*.bam.stats"),
+                #                                    self.stats_dir_path), shell=True)
+                # subprocess.run('rm -rf {0}'.format(local_stats_dir_path))
+
                 print("read recruitment complete: " + clean_dir_path)
         else:
             pass
@@ -63,6 +66,7 @@ class ReadRecruiter:
         tuple_list = []
         for i in range(int(len(acc_list)/2)):
             # general format of file name is <acc><suffix>
+            print("splitting function", acc_list[i*2], self.args.suffix)
             acc = acc_list[i*2].split(self.args.suffix)[0]
 
             # acc_list[i*2] should denote r1 file, acc_list[i*2] should denote r2 file 
@@ -71,38 +75,41 @@ class ReadRecruiter:
         return tuple_list
 
 
-    def align_reads(self, tuple_list, clean_dir_path, index_path):
-        # create an output dir in each fastq dir specified with -i
-        output_dir_path = os.path.join(clean_dir_path, "rrap_output_dir_" + self.args.n)
-        subprocess.run("mkdir {0}".format(output_dir_path), shell=True)
-
+    def align_reads(self, tuple_list, clean_dir_path):
         # for each acc
         for sample in tuple_list:
             print("sample: ", sample)
-            # create helpful variables
-            acc = sample[0].split("/")[-1]
-            r1_path = sample[1]
-            r2_path = sample[2]
-            acc_path = sample[0]
+
+            # create helpful variable
+            acc = os.path.basename(sample[0])
+            acc_bam_path_stem = os.path.join(self.bam_dir_path, acc)
+
+            print("\n")
+            print("")
 
             print("working on sample:", acc, "\n")
 
             # only run bowtie2 if .bam.stats file doesn't exist
-            if not os.path.exists(os.path.expanduser(os.path.join(output_dir_path, "{0}.bam.stats".format(os.path.basename(acc))))):
+            if not os.path.exists(os.path.expanduser(os.path.join(self.stats_dir_path, "{0}.bam.stats".format(acc)))):
                 # run read recruitment
-                print("previous file does not exist: running read recruitment")
-
                 threads_addon = ""
                 if self.args.threads:
                     threads_addon = "--threads {}".format(self.args.threads)
+                # command = 'bowtie2 {3} -x "{0}" -1 "{4}" -2 "{5}" ' \
+                #           '--no-unal -S "{2}.sam"'.format(self.index_dir_path, acc_path, acc, threads_addon, r1_path, r2_path)
 
-                command = 'bowtie2 {3} -x "{0}" -1 "{4}" -2 "{5}" ' \
-                          '--no-unal -S "{2}.sam"'.format(index_path, acc_path, acc, threads_addon, r1_path, r2_path)
+                command = 'bowtie2 {0} -x "{1}" -1 "{2}" -2 "{3}" ' \
+                          '--no-unal -S "{4}.sam"'.format(threads_addon, self.index_dir_path, sample[1], sample[2], 
+                                                          acc_bam_path_stem)
                 subprocess.run(command, shell=True)
 
-                self.generate_stats_file(acc, output_dir_path)
+                # generate stats_dir
+                self.generate_stats_file(acc_bam_path_stem)
+            else:
+                print("previous file exists: not running read recruitment")
 
-    def generate_stats_file(self, acc, output_dir_path):
+
+    def generate_stats_file(self, acc):
         # convert output SAM fle into a BAM file
         subprocess.run('samtools view -F 4 -bS "{0}.sam" > "{0}-RAW.bam"'.format(acc), shell=True)
 
@@ -111,8 +118,8 @@ class ReadRecruiter:
         subprocess.run('samtools index "{0}.bam"'.format(acc), shell=True)
         subprocess.run('samtools idxstats "{0}.bam" > "{0}.bam.stats"'.format(acc), shell=True)
 
-        # copy bam.stats files into output dir
-        subprocess.run('mv {0}.bam.stats {1}'.format(acc, output_dir_path), shell=True)
+        # copy bam.stats files into stats dir
+        subprocess.run('mv {0}.bam.stats {1}'.format(acc, self.stats_dir_path), shell=True)
 
         # TODO remove temporary files
         subprocess.run('rm "{0}.sam" "{0}-RAW.bam"'.format(acc), shell=True)

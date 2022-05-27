@@ -4,6 +4,7 @@ from pathlib import Path
 import csv
 import pandas as pd
 
+""" delete rpkm_dir"""
 
 class Visualizer:
     def __init__(self, args, rpkm_heater_path, stats_dir_path):
@@ -13,10 +14,8 @@ class Visualizer:
 
     def visualize(self):
         self.plot_heatmaps()
-        self.calculate_coverage_and_depth()
 
     def plot_heatmaps(self):
-        # TODO
         rpkm_output_dir = os.path.join(self.args.o, "rpkm")
         subprocess.run("mkdir {}".format(rpkm_output_dir), shell=True)
         sort_gen_addon = ""
@@ -39,7 +38,8 @@ class Visualizer:
         subprocess.run(cmd, shell=True)
 
     def calculate_rpkm(self):
-
+        rpkm_output_dir = os.path.join(self.args.o, "rpkm")
+        subprocess.run("mkdir {}".format(rpkm_output_dir), shell=True)
         # df holds rpkm values with genome acc as the row names and metaG acc as the headers
         df = pd.DataFrame()
 
@@ -76,8 +76,3 @@ class Visualizer:
         print(df)
         rpkm_output_dir = os.path.join(self.args.o, "rpkm")
         df.to_csv(os.path.join(rpkm_output_dir, self.args.n + "_rpkm_noLog.csv"), index_label='ACC')
-
-
-    def calculate_coverage_and_depth(self):
-        # TODO
-        pass

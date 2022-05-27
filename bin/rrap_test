@@ -6,28 +6,26 @@ import unittest
 import filecmp
 import os
 import subprocess
-import rrap
+from rrap import controller
 
 def test_main():
     # use relative paths
     dirname = os.path.dirname(__file__)
-    cleaned_dir_txt_file = os.path.join(dirname, '..', 'tests', 'metaG_paths.txt')
-    print(dirname, cleaned_dir_txt_file)
-    subprocess.call('cat {0}'.format(cleaned_dir_txt_file), shell=True)
 
-    with patch("sys.argv", ['-i', 
-                            '/Users/connerkojima/thrash/cykojima/rrap_test/cleaned_dir_paths.txt', 
+    with patch("sys.argv", ['rrap', 
+                            '-i',
+                            os.path.join(os.path.dirname(__file__), '..', 'tests', 'metaG_paths.txt'), 
                             '-rg', 
-                            '/Users/connerkojima/thrash/cykojima/rrap_test/LD12_genomes/', 
+                            os.path.join(os.path.dirname(__file__), '..', 'tests', 'reference'), 
                             '-o', 
-                            '/Users/connerkojima/thrash/cykojima/rrap_test/output_dir', 
+                            os.path.join(os.path.dirname(__file__), '..', 'tests', 'output'), 
                             '-n', 
-                            'test_24', 
+                            'val', 
                             '--merge-contigs', 
                             '-suffix', 
-                            '"--', 
-                            '-QUALITY_PASSED_R1.fastq"']):
-        rrap.main()
-        unittest.Testcase.assertTrue(filecmp.cmp("first.doc","second.doc",shallow=False))
+                            '_toy_R1.fastq']):
+        controller.main()
+        # unittest.Testcase.assertTrue(filecmp.cmp("first.doc","second.doc",shallow=False))
 
-test_main()
+if __name__ == "__main__":
+    test_main()
