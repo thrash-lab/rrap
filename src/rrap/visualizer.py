@@ -1,10 +1,7 @@
 import subprocess
 import os
-from pathlib import Path
-import csv
 import pandas as pd
 
-""" delete rpkm_dir"""
 
 class Visualizer:
     def __init__(self, args, rpkm_heater_path, stats_dir_path):
@@ -16,8 +13,9 @@ class Visualizer:
         self.plot_heatmaps()
 
     def plot_heatmaps(self):
-        rpkm_output_dir = os.path.join(self.args.o, "rpkm")
-        subprocess.run("mkdir {}".format(rpkm_output_dir), shell=True)
+        # make appropriate dir
+        rpkm_output_dir = self.create_rpkm_output_dir()
+
         sort_gen_addon = ""
         sort_samples_addon = ""
 
@@ -38,8 +36,9 @@ class Visualizer:
         subprocess.run(cmd, shell=True)
 
     def calculate_rpkm(self):
-        rpkm_output_dir = os.path.join(self.args.o, "rpkm")
-        subprocess.run("mkdir {}".format(rpkm_output_dir), shell=True)
+        # make appropriate dir
+        rpkm_output_dir = self.create_rpkm_output_dir()
+
         # df holds rpkm values with genome acc as the row names and metaG acc as the headers
         df = pd.DataFrame()
 
@@ -74,5 +73,17 @@ class Visualizer:
                 df = pd.concat([df, rpkm_df], axis=1, join='outer')
 
         print(df)
-        rpkm_output_dir = os.path.join(self.args.o, "rpkm")
         df.to_csv(os.path.join(rpkm_output_dir, self.args.n + "_rpkm_noLog.csv"), index_label='ACC')
+
+    def create_rpkm_output_dir(self):
+        # make appropriate dir
+        rpkm_base_dir = os.path.join(self.args.o, "rpkm")
+        rpkm_output_dir = os.path.join(rpkm_base_dir, self.args.n)
+
+        if not os.path.isdir(rpkm_base_dir):
+            subprocess.run("mkdir {}".format(rpkm_base_dir), shell=True)
+        if not os.path.isdir(rpkm_output_dir):  
+            subprocess.run("mkdir {}".format(rpkm_output_dir), shell=True)
+        
+        return rpkm_output_dir
+
