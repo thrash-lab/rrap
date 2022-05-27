@@ -10,13 +10,14 @@ class ReadRecruiter:
         self.stats_dir_path = stats_dir_path
         self.bam_dir_path = bam_dir_path
 
+        # detect -- escape characters
         if self.args.suffix[0:2] == "--":
             self.args.suffix = self.args.suffix[3:]
 
     def read_recruit(self):
         if self.args.i:
 
-            print("*** get list of acc ***")
+            print("retrieving list of acc")
             # retrieve individual clean dir paths from -i flag
             with open(self.args.i) as file:
                 clean_dir_paths = file.readlines()
@@ -66,7 +67,6 @@ class ReadRecruiter:
         tuple_list = []
         for i in range(int(len(acc_list)/2)):
             # general format of file name is <acc><suffix>
-            print("splitting function", acc_list[i*2], self.args.suffix)
             acc = acc_list[i*2].split(self.args.suffix)[0]
 
             # acc_list[i*2] should denote r1 file, acc_list[i*2] should denote r2 file 
@@ -78,16 +78,11 @@ class ReadRecruiter:
     def align_reads(self, tuple_list, clean_dir_path):
         # for each acc
         for sample in tuple_list:
-            print("sample: ", sample)
-
-            # create helpful variable
+            # create helpful variables
             acc = os.path.basename(sample[0])
             acc_bam_path_stem = os.path.join(self.bam_dir_path, acc)
 
-            print("\n")
-            print("")
-
-            print("working on sample:", acc, "\n")
+            print("\n working on sample:", acc, "\n")
 
             # only run bowtie2 if .bam.stats file doesn't exist
             if not os.path.exists(os.path.expanduser(os.path.join(self.stats_dir_path, "{0}.bam.stats".format(acc)))):

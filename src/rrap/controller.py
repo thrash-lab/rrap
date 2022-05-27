@@ -83,8 +83,9 @@ class Controller:
         if not self.args.vis_pass:
             print("---------visualization-------------")
             self.visualizer = visualizer.Visualizer(self.args, self.rpkm_heater_path, self.stats_dir_path)
-            #self.visualizer.visualize()
             self.visualizer.calculate_rpkm()
+            if self.args.extra_vis:
+                self.visualizer.plot_heatmaps()
         else:
             print("---------skipped visualization-------------")
 
@@ -108,8 +109,8 @@ class Controller:
                                   required=True)
         self.inputs.add_argument('-n', help='name of the project', required=True, metavar='project name')
 
-        self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes', required=False)
-        self.inputs.add_argument('-sort_samples', help='txt file of sorted samples', required=False)
+        self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes (if --extra-vis flag is used)', required=False)
+        self.inputs.add_argument('-sort_samples', help='txt file of sorted samples (if --extra-vis flag is used)', required=False)
         self.inputs.add_argument("--threads", help='number of available threads', required=False)
         self.inputs.add_argument("-suffix", default="_pass_1.fastq", 
                                   help="everything in metaG file name that is after the acc for the forward (R1) read files \n"
@@ -133,6 +134,9 @@ class Controller:
         self.options.add_argument("--skip-vis", default=False, dest='vis_pass',
                                   action='store_true',
                                   help='Specify if the visualization step can be skipped')
+        self.options.add_argument("--extra-vis", default=False, dest='extra_vis',
+                                  action='store_true', 
+                                  help='create csv with normalized RPKM values (log10) and plot heatmap using normalized values')
 
         self.args = self.p.parse_args()
         

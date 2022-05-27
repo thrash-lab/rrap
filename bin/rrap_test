@@ -22,6 +22,7 @@ def test_main():
                             '-n', 
                             'val', 
                             '--merge-contigs', 
+                            '--extra-vis',
                             '-suffix', 
                             '_toy_R1.fastq']):
         controller.main()
