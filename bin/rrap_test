@@ -13,10 +13,20 @@ class TestOutputs(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         super(TestOutputs, cls).setUpClass()
-
         # use relative paths
         bin_dir = os.path.dirname(__file__)
+        output_dir = os.path.join(bin_dir, "..", 'tests', 'output')
         tests_dir = os.path.join(bin_dir, "..", 'tests')
+
+        # remove concat file if it exists
+        if os.path.isdir(os.path.join(output_dir, 'allgenomes_cat_test.fna')):
+            subprocess.run('rm {0}'.format(os.path.join(output_dir, 'allgenomes_cat_test.fna')), shell=True)
+
+        # remove output dirs for test if they exist
+        dirs = ['bam/test', 'index/test', 'rpkm/test', 'stats/test']
+        for sub_dir in dirs:
+            if os.path.isdir(os.path.join(output_dir, sub_dir)):
+                subprocess.run('rm -rf {0}'.format(os.path.join(output_dir, sub_dir)), shell=True)
 
         # run through entire rrap pipeline
         with patch("sys.argv", ['rrap', 
@@ -34,7 +44,7 @@ class TestOutputs(unittest.TestCase):
                                 '_toy_R1.fastq']):
             controller.main()
 
-    def test_concatenator(self):
+    def test_concatenating_files(self):
         # use relative paths
         bin_dir = os.path.dirname(__file__)
         tests_dir = os.path.join(bin_dir, "..", 'tests')
@@ -44,7 +54,7 @@ class TestOutputs(unittest.TestCase):
         self.assertTrue(os.path.isfile(test_concat))
         self.assertTrue(filecmp.cmp(val_concat, test_concat, shallow=False))
     
-    def test_indexer(self):
+    def test_indexing_reference_genomes(self):
         # use relative paths
         bin_dir = os.path.dirname(__file__)
         index_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'index')
@@ -52,30 +62,53 @@ class TestOutputs(unittest.TestCase):
         # make sure all index files exist
         extensions = [".1.bt2", ".2.bt2", ".3.bt2", ".4.bt2", ".rev.1.bt2", ".rev.2.bt2"]
         for extension in extensions:
-            print('checking', os.path.join(index_dir, "test", "test{1}".format(extension)))
-            self.assertTrue(os.path.isfile("{0}test{1}".format(os.path.join(index_dir, "test/"), extension)))
+            self.assertTrue(os.path.isfile(os.path.join(index_dir, "test", "test{0}".format(extension))))
 
         # compare one of the index files to make sure it matches the expected output
         val_index = os.path.join(index_dir, "val", "val.1.bt2")
         test_index = os.path.join(index_dir, "test", "test.1.bt2")
         self.assertTrue(filecmp.cmp(val_index, test_index, shallow=False))
     
-    @classmethod
-    def tearDownClass(cls):
-        super(TestOutputs, cls).tearDownClass()
-
+    def test_read_recruitment(self):
         # use relative paths
         bin_dir = os.path.dirname(__file__)
-        output_dir = os.path.join(bin_dir, "..", 'tests', 'output')
+        bam_test_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'bam', 'test')
+        files = ['ERR864077.bam', 'SRR11803377.bam', 'SRR11803378.bam', 'reads.bam', 
+                 'ERR864077.bam.bai', 'SRR11803377.bam.bai', 'SRR11803378.bam.bai', 
+                 'reads.bam.bai']
+        
+        # compare files
+        for file in files:
+            self.assertTrue(os.path.isfile(os.path.join(bam_test_dir, file)))
 
-        # remove concat file
-        subprocess.run('rm {0}'.format(os.path.join(output_dir, 'allgenomes_cat_test.fna')), shell=True)
-
-        # remove output dirs for test
-        dirs = ['bam/test', 'index/test', 'rpkm/test', 'stats/test']
-        for sub_dir in dirs:
-            subprocess.run('rm -rf {0}'.format(os.path.join(output_dir, sub_dir)), shell=True)
+    def test_data_transform(self):
+        # use relative paths
+        bin_dir = os.path.dirname(__file__)
+        stats_val_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'stats', 'val')
+        stats_test_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'stats', 'test')
+        files = ['ERR864077.bam.stats', 'SRR11803377.bam.stats', 
+                 'SRR11803378.bam.stats', 'reads.bam.stats']
+        
+        # compare files
+        for file in files:
+            self.assertTrue(filecmp.cmp(os.path.join(stats_val_dir, file), 
+                                        os.path.join(stats_test_dir, file), 
+                                        shallow=False))
+        
+    def test_rpkm_data(self):
+        # use relative paths
+        bin_dir = os.path.dirname(__file__)
+        rpkm_val_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'rpkm', 'val')
+        rpkm_test_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'rpkm', 'test')
+        val_files = ['val_counts.csv', 'val_rpkm.csv', 'val_rpkm_noLog.csv']
+        test_files = ['test_counts.csv', 'test_rpkm.csv', 'test_rpkm_noLog.csv']
+        
+        # compare files
+        for val_file, test_file in zip(val_files, test_files):
+            self.assertTrue(filecmp.cmp(os.path.join(rpkm_val_dir, val_file), 
+                                        os.path.join(rpkm_test_dir, test_file), 
+                                        shallow=False)) 
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(verbosity=2)
