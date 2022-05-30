@@ -13,8 +13,9 @@ class Indexer:
             threads_addon = ""
             if self.args.threads:
                 threads_addon = "--threads {}".format(self.args.threads)
-            print("Attempting to run command:")
-            print("bowtie2-build {0} {1}".format(self.cat_file_path, self.output_path, threads_addon))
+            if self.args.verbosity:
+                print("Attempting to run command:")
+                print("bowtie2-build {0} {1}".format(self.cat_file_path, self.output_path, threads_addon))
             subprocess.run("bowtie2-build {0} {1}".format(self.cat_file_path, self.output_path, threads_addon),
                            shell=True)
         else:

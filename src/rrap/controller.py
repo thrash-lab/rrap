@@ -53,7 +53,7 @@ class Controller:
     def run(self):
         self.add_arguments()
 
-        print("---------making output dir if needed-------------")
+        ("\n---------making output dir if needed-------------")
         self.set_output_dir()
         self.cat_file_name = os.path.join(self.args.o, 'allgenomes_cat_{0}.fna'.format(self.args.n))
 
@@ -61,33 +61,33 @@ class Controller:
             if self.args.crg:
                 self.cat_file_path = self.args.crg
             else:
-                print("---------concatenating reference genomes-------------")
+                print("\n---------concatenating reference genomes-------------")
                 self.concatenator = concatenator.Concatenator(self.args)
                 self.cat_file_path = self.concatenator.concatenate()
 
-            print("---------indexing reference genomes-------------")
+            print("\n---------indexing reference genomes-------------")
             self.indexer = indexer.Indexer(self.args, os.path.join(self.index_dir_path, self.args.n), self.cat_file_path)
             self.indexer.index()
         else:
-            print("---------skipped indexing reference genomes-------------")
+            print("\n---------skipped indexing reference genomes-------------")
 
         if not self.args.rr_pass:
-            print("---------read recruitment and data transform-------------")
+            print("\n---------read recruitment and data transform-------------")
             self.read_recruiter = read_recruiter.ReadRecruiter(self.args, os.path.join(self.index_dir_path, self.args.n),
                                                                self.cat_file_path, self.stats_dir_path,
                                                                self.bam_dir_path)
             self.read_recruiter.read_recruit()
         else:
-            print("---------skipped read recruitment and data transform-------------")
+            print("\n---------skipped read recruitment and data transform-------------")
 
         if not self.args.vis_pass:
-            print("---------visualization-------------")
+            print("\n---------visualization-------------")
             self.visualizer = visualizer.Visualizer(self.args, self.rpkm_heater_path, self.stats_dir_path)
             self.visualizer.calculate_rpkm()
             if self.args.extra_vis:
                 self.visualizer.plot_heatmaps()
         else:
-            print("---------skipped visualization-------------")
+            print("\n---------skipped visualization-------------")
 
 
     def add_arguments(self):
@@ -137,6 +137,8 @@ class Controller:
         self.options.add_argument("--extra-vis", default=False, dest='extra_vis',
                                   action='store_true', 
                                   help='create csv with normalized RPKM values (log10) and plot heatmap using normalized values')
+        self.options.add_argument("-v", default=False, dest='verbosity',
+                                  action='store_true', help="more verbose output in terms of what the program is doing")
 
         self.args = self.p.parse_args()
         

@@ -17,7 +17,6 @@ class ReadRecruiter:
     def read_recruit(self):
         if self.args.i:
 
-            print("retrieving list of acc")
             # retrieve individual clean dir paths from -i flag
             with open(self.args.i) as file:
                 clean_dir_paths = file.readlines()
@@ -27,17 +26,10 @@ class ReadRecruiter:
                 # create list of tuples with each tuple containing the forward and reverse file name for a sample
                 tuple_list = self.find_acc(clean_dir_path)
 
-                print("Running read recruitment for dir: " + clean_dir_path)
+                print("\nRunning read recruitment for dir: " + clean_dir_path)
                 self.align_reads(tuple_list, clean_dir_path)
 
-                # local_stats_dir_path = os.path.join(clean_dir_path, "rrap_output_dir_" + self.args.n)
-
-                # print("copying .bam.stats files to stats dir: " + local_stats_dir_path)
-                # subprocess.run('cp {0} {1}'.format(os.path.join(local_stats_dir_path, "*.bam.stats"),
-                #                                    self.stats_dir_path), shell=True)
-                # subprocess.run('rm -rf {0}'.format(local_stats_dir_path))
-
-                print("read recruitment complete: " + clean_dir_path)
+                print("\nread recruitment complete: " + clean_dir_path)
         else:
             pass
 
@@ -50,8 +42,6 @@ class ReadRecruiter:
         acc_list = [line.rstrip() for line in acc_list]
 
         # make sure that half the fastq files contain the forward pass (r1) suffix
-        print(acc_list)
-        print(self.args.suffix)
 
         contains_suffix = [sample for sample in acc_list if self.args.suffix in sample]
         if len(contains_suffix) == 0:
@@ -82,7 +72,8 @@ class ReadRecruiter:
             acc = os.path.basename(sample[0])
             acc_bam_path_stem = os.path.join(self.bam_dir_path, acc)
 
-            print("\n working on sample:", acc, "\n")
+            if self.args.verbosity:
+                print("\n working on sample:", acc, "\n")
 
             # only run bowtie2 if .bam.stats file doesn't exist
             if not os.path.exists(os.path.expanduser(os.path.join(self.stats_dir_path, "{0}.bam.stats".format(acc)))):
@@ -101,7 +92,8 @@ class ReadRecruiter:
                 # generate stats_dir
                 self.generate_stats_file(acc_bam_path_stem)
             else:
-                print("previous file exists: not running read recruitment")
+                if self.args.verbosity:
+                    print("previous file exists for", acc, "not running read recruitment")
 
 
     def generate_stats_file(self, acc):

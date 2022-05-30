@@ -2,7 +2,6 @@ import subprocess
 import os
 import pandas as pd
 
-
 class Visualizer:
     def __init__(self, args, rpkm_heater_path, stats_dir_path):
         self.args = args
@@ -31,8 +30,9 @@ class Visualizer:
                                                                            self.args.n,
                                                                            sort_gen_addon,
                                                                            sort_samples_addon)
+        if self.args.verbosity:
+            print("running: " + cmd)
 
-        print("running: " + cmd)
         subprocess.run(cmd, shell=True)
 
     def calculate_rpkm(self):
@@ -72,7 +72,8 @@ class Visualizer:
                 # add rpkm data to overall dataframe
                 df = pd.concat([df, rpkm_df], axis=1, join='outer')
 
-        print(df)
+        if self.args.verbosity:
+            print(df, "\n")
         df.to_csv(os.path.join(rpkm_output_dir, self.args.n + "_rpkm_noLog.csv"), index_label='ACC')
 
     def create_rpkm_output_dir(self):

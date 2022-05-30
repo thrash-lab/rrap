@@ -68,6 +68,7 @@ heatmap.add_argument('-phylo_colors', help="input color list for clades/sub-clad
 heatmap.add_argument('-xticks', help="control xticks (on/off) (default:on)")
 heatmap.add_argument('-yticks', help="control yticks (on/off) (default:on)")
 optional.add_argument('-clear', '--clear_all', help="clear previous output directory specification and data products (use if double-backing out_dir)", action="store_true")
+optional.add_argument('-v', default=False, dest='verbosity', action="store_true", help="more verbose output")
 parser._optionals.title="## help arguments"
 args = parser.parse_args()
 
@@ -159,54 +160,64 @@ if args.count:
 
 		df2 = df1[['reads_mapped','sample']]
 
-		print(df2)
+		if args.verbosity:
+			print(df2)
 		list.append(df2)
 	frame2 = pd.concat(list, axis=1, ignore_index=True)
-	print(frame2)
+	if args.verbosity:
+		print(frame2)
 	frame2.to_csv(args.o+"/"+project_name+'_frame2.csv', sep="\t")
 	gen_length_key = pd.read_csv("temp1.csv", sep="\t")
 	gen_length_key.columns = ['ACC','genome_length']
 	gen_length_key.set_index('ACC', inplace=True)
 	acc_list.append(gen_length_key.index.values)
 	frame3 = pd.concat([gen_length_key,frame2], axis=1, join_axes=[gen_length_key.index])
-	print(frame3)
+	if args.verbosity:
+		print(frame3)
 #	frame3.to_csv(args.o+"/"+project_name+'_frame3.csv', sep="\t")
 
 	frame4 = frame3.iloc[0:,1::2]
-	print(frame4)
+	if args.verbosity:
+		print(frame4)
 #	frame4.to_csv(args.o+"/"+project_name+'_frame4.csv', sep="\t")
 	gen_length_key = pd.read_csv("temp1.csv", sep="\t")
 	gen_length_key.columns = ['ACC','genome_length']
 	gen_length_key.set_index('ACC', inplace=True)
 
 	counts = pd.concat([gen_length_key,frame4], axis=1, join_axes=[gen_length_key.index])
-	print(counts)
+	if args.verbosity:
+		print(counts)
 	subprocess.call("rm -f temp1.csv", shell=True)
 
-	print(sample_list)
+	if args.verbosity:
+		print(sample_list)
 	counts.columns = counts.columns[:1].tolist() + sample_list
-	print(counts)
+	if args.verbosity:
+		print(counts)
 
 	counts.drop(counts.tail(1).index,inplace=True)
 	counts.to_csv(args.o+"/"+project_name+'_counts.csv', sep="\t")
 
 	counts = counts.convert_objects(convert_numeric=True)
 	counts.loc['Total',:] = counts.sum(axis=0) / 1000000
-	print(counts)
-	print(counts.dtypes)
+	if args.verbosity:
+		print(counts)
+		print(counts.dtypes)
 
 	counts['genome_length']['Total'] = 0
 	counts_list.append(counts.loc['Total'])
 	counts['genome_length'] = counts['genome_length'] / 1000
 	counts = counts.add_suffix('_reads')
 	counts=counts.rename(columns = {'genome_length_reads':'genome_length'})
-	print(counts)
-	print(counts_list)
+	if args.verbosity:
+		print(counts)
+		print(counts_list)
 
 	df_test = pd.DataFrame(counts_list)
 	df_test.drop('genome_length', axis=1, inplace=True)
 	df_test = df_test.add_suffix('_totreads')
-	print(df_test)
+	if args.verbosity:
+		print(df_test)
 
 	try1 = pd.concat([df_test,counts], axis=1, join_axes=[counts.index])
 	try1=  try1.sort_values(by=['genome_length'], ascending=[True])
@@ -218,7 +229,8 @@ if args.count:
 	try1.insert(0, 'genome_length', first_col)
 	try1.fillna(method='ffill', inplace=True)
 	try1 = try1.iloc[1:]
-	print(try1)
+	if args.verbosity:
+		print(try1)
 
 	# RPKM, top = numReads#
 	df_top = try1.iloc[0:,1::2]
@@ -239,7 +251,8 @@ if args.count:
 	#print(df_top.iloc[0:,0::1])
 	df_rpkm = df_top.iloc[0:,0::1].divide(df_bottom_2.values, axis="index")
 	df_rpkm.columns = df_rpkm.columns.str.replace('_reads', '', regex=True)
-	print(df_rpkm)
+	if args.verbosity:
+		print(df_rpkm)
 
 	#df_rpkm.to_csv(project_name+"_rpkm.csv", sep="\t")
 
@@ -247,40 +260,51 @@ if args.count:
 
 	if args.sort_samples and args.sort_gen:
 		sorted = pd.read_csv(args.sort_samples, sep="\t")
-		print(sorted)
+		if args.verbosity:
+			print(sorted)
 		sorted_list = sorted.columns.tolist()
-		print(sorted_list)
+		if args.verbosity:
+			print(sorted_list)
 
 		df_rpkm = df_rpkm[sorted_list]
 
 		sorted_y = pd.read_csv(args.sort_gen, sep="\t")
-		print(sorted_y)
+		if args.verbosity:
+			print(sorted_y)
 		sorted_list_y = sorted_y.columns.tolist()
-		print(sorted_list_y)
+		if args.verbosity:
+			print(sorted_list_y)
 
 		df_rpkm = df_rpkm.reindex(sorted_list_y)
 		df_rpkm = df_rpkm.T
-		print(df_rpkm)
+		if args.verbosity:
+			print(df_rpkm)
 		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
 
 	elif args.sort_samples:
 		sorted = pd.read_csv(args.sort_samples, sep="\t")
-		print(sorted)
+		if args.verbosity:
+			print(sorted)
 		sorted_list = sorted.columns.tolist()
-		print(sorted_list)
+		if args.verbosity:
+			print(sorted_list)
 
 		df_rpkm = df_rpkm[sorted_list]
-		print(df_rpkm)
+		if args.verbosity:
+			print(df_rpkm)
 		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
 
 	elif args.sort_gen:
 		sorted = pd.read_csv(args.sort_samples, sep="\t")
-		print(sorted)
+		if args.verbosity:
+			print(sorted)
 		sorted_list = sorted.columns.tolist()
-		print(sorted_list)
+		if args.verbosity:
+			print(sorted_list)
 
 		df_rpkm = df_rpkm[sorted_list]
-		print(df_rpkm)
+		if args.verbosity:
+			print(df_rpkm)
 		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
 
 
@@ -303,7 +327,8 @@ elif args.map:
 		#print(df2)
 		list.append(df2)
 	frame2 = pd.concat(list, axis=1, ignore_index=True)
-	print(frame2)
+	if args.verbosity:
+		print(frame2)
 #	frame2.to_csv(args.o+"/"+project_name+'_frame2.csv', sep="\t")
 
 	gen_length_key = pd.read_csv("temp1.csv", sep="\t")
@@ -311,12 +336,14 @@ elif args.map:
 	gen_length_key.set_index('ACC', inplace=True)
 	acc_list.append(gen_length_key.index.values)
 	frame3 = pd.concat([gen_length_key,frame2], axis=1, join_axes=[gen_length_key.index])
-	print(frame3)
+	if args.verbosity:
+		print(frame3)
 #	frame3.to_csv(args.o+"/"+project_name+'_frame3.csv', sep="\t")
 
 
 	frame4 = frame3.iloc[0:,1::2]
-	print(frame4)
+	if args.verbosity:
+		print(frame4)
 #	frame4.to_csv(args.o+"/"+project_name+'_frame4.csv', sep="\t")
 
 	gen_length_key = pd.read_csv("temp1.csv", sep="\t")
@@ -324,12 +351,15 @@ elif args.map:
 	gen_length_key.set_index('ACC', inplace=True)
 
 	counts = pd.concat([gen_length_key,frame4], axis=1, join_axes=[gen_length_key.index])
-	print(counts)
+	if args.verbosity:
+		print(counts)
 	subprocess.call("rm -f temp1.csv", shell=True)
 
-	print(sample_list)
+	if args.verbosity:
+		print(sample_list)
 	counts.columns = counts.columns[:1].tolist() + sample_list
-	print(counts)
+	if args.verbosity:
+		print(counts)
 
 	counts.drop(counts.tail(1).index,inplace=True)
 	counts.to_csv(args.o+"/"+project_name+'_counts.csv', sep="\t")
@@ -337,8 +367,9 @@ elif args.map:
 
 	counts = counts.convert_objects(convert_numeric=True)
 	counts.loc['Total',:] = counts.sum(axis=0) / 1000000
-	print(counts)
-	print(counts.dtypes)
+	if args.verbosity:
+		print(counts)
+		print(counts.dtypes)
 #	counts.to_csv(args.o+"/"+project_name+'1.csv', sep="\t")
 
 	counts['genome_length']['Total'] = 0
@@ -346,14 +377,17 @@ elif args.map:
 	counts['genome_length'] = counts['genome_length'] / 1000
 	counts = counts.add_suffix('_reads')
 	counts=counts.rename(columns = {'genome_length_reads':'genome_length'})
-	print(counts)
-	print(counts_list)
+	if args.verbosity:
+		print(counts)
+	if args.verbosity:
+		print(counts_list)
 #	counts.to_csv(args.o+"/"+project_name+'2.csv', sep="\t")
 
 	df_test = pd.DataFrame(counts_list)
 	df_test.drop('genome_length', axis=1, inplace=True)
 	df_test = df_test.add_suffix('_totreads')
-	print(df_test)
+	if args.verbosity:
+		print(df_test)
 #	df_test.to_csv(args.o+"/"+project_name+'3.csv', sep="\t")
 
 	try1 = pd.concat([df_test,counts], axis=1, join_axes=[counts.index])
@@ -366,7 +400,8 @@ elif args.map:
 	try1.insert(0, 'genome_length', first_col)
 	try1.fillna(method='ffill', inplace=True)
 	try1 = try1.iloc[1:]
-	print(try1)
+	if args.verbosity:
+		print(try1)
 #	try1.to_csv(args.o+"/"+project_name+'4.csv', sep="\t")
 
 	# RPKM, top = numReads#
@@ -374,39 +409,49 @@ elif args.map:
 
 	# RPKM, bottom = (gen_l/100)(totReads/1000000)#
 	df_bottom = try1.iloc[0:,0::2]
-	print(df_top)
-	print(df_bottom)
+	if args.verbosity:
+		print(df_top)
+	if args.verbosity:
+		print(df_bottom)
 	df_bottom.memory_usage(deep=True)
 
 	#RPKM, bottom --> gl*tR#
 	#print(df_bottom.iloc[0:,1::1])
 	df_bottom_2 = df_bottom.iloc[0:,1::1].multiply(df_bottom["genome_length"], axis="index")
-	print(df_bottom_2)
+	if args.verbosity:
+		print(df_bottom_2)
 
 
 	#RPKM, top/bottom#
 	#print(df_top.iloc[0:,0::1])
 	df_rpkm = df_top.iloc[0:,0::1].divide(df_bottom_2.values, axis="index")
 	df_rpkm.columns = df_rpkm.columns.str.replace('_reads', '', regex=True)
-	print(df_rpkm)
-	print(acc_list)
+	if args.verbosity:
+		print(df_rpkm)
+	if args.verbosity:
+		print(acc_list)
 
 	if args.sort_samples and args.sort_gen:
 		sorted = pd.read_csv(args.sort_samples, sep="\t")
-		print(sorted)
+		if args.verbosity:
+			print(sorted)
 		sorted_list = sorted.columns.tolist()
-		print(sorted_list)
+		if args.verbosity:
+			print(sorted_list)
 
 		df_rpkm = df_rpkm[sorted_list]
 
 		sorted_y = pd.read_csv(args.sort_gen, sep="\t")
-		print(sorted_y)
+		if args.verbosity:
+			print(sorted_y)
 		sorted_list_y = sorted_y.columns.tolist()
-		print(sorted_list_y)
+		if args.verbosity:
+			print(sorted_list_y)
 
 		df_rpkm = df_rpkm.reindex(sorted_list_y)
 #		df_rpkm = df_rpkm.T
-		print(df_rpkm)
+		if args.verbosity:
+			print(df_rpkm)
 		df_rpkm = np.log10(df_rpkm)
 		df_rpkm[df_rpkm < 0] = 0
 		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
@@ -517,12 +562,15 @@ elif args.map:
 
 	elif args.sort_samples:
 		sorted = pd.read_csv(args.sort_samples, sep="\t")
-		print(sorted)
+		if args.verbosity:
+			print(sorted)
 		sorted_list = sorted.columns.tolist()
-		print(sorted_list)
+		if args.verbosity:
+			print(sorted_list)
 
 		df_rpkm = df_rpkm[sorted_list]
-		print(df_rpkm)
+		if args.verbosity:
+			print(df_rpkm)
 		df_rpkm = np.log10(df_rpkm)
 		df_rpkm[df_rpkm < 0] = 0
 		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
@@ -632,9 +680,11 @@ elif args.map:
 
 	elif args.sort_gen:
 		sorted_y = pd.read_csv(args.sort_gen, sep="\t")
-		print(sorted_y)
+		if args.verbosity:
+			print(sorted_y)
 		sorted_list_y = sorted_y.columns.tolist()
-		print(sorted_list_y)
+		if args.verbosity:
+			print(sorted_list_y)
 
 		df_rpkm = df_rpkm.reindex(sorted_list_y)
 #		df_rpkm = df_rpkm.T

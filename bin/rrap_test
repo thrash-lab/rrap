@@ -28,20 +28,24 @@ class TestOutputs(unittest.TestCase):
             if os.path.isdir(os.path.join(output_dir, sub_dir)):
                 subprocess.run('rm -rf {0}'.format(os.path.join(output_dir, sub_dir)), shell=True)
 
+        rrap_cmd = ['rrap', 
+                    '-i',
+                    os.path.join(tests_dir, 'metaG_paths.txt'), 
+                    '-rg', 
+                    os.path.join(tests_dir, 'reference'), 
+                    '-o', 
+                    os.path.join(tests_dir, 'output'), 
+                    '-n', 
+                    'test', 
+                    '-v',
+                    '--merge-contigs', 
+                    '--extra-vis',
+                    '-suffix', 
+                    '_toy_R1.fastq']
+
+        print("testing RRAP with the following command: \n{0}\n".format(" ".join(rrap_cmd)))
         # run through entire rrap pipeline
-        with patch("sys.argv", ['rrap', 
-                                '-i',
-                                os.path.join(tests_dir, 'metaG_paths.txt'), 
-                                '-rg', 
-                                os.path.join(tests_dir, 'reference'), 
-                                '-o', 
-                                os.path.join(tests_dir, 'output'), 
-                                '-n', 
-                                'test', 
-                                '--merge-contigs', 
-                                '--extra-vis',
-                                '-suffix', 
-                                '_toy_R1.fastq']):
+        with patch("sys.argv", rrap_cmd):
             controller.main()
 
     def test_concatenating_files(self):
