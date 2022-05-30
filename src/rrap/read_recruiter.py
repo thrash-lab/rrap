@@ -45,10 +45,12 @@ class ReadRecruiter:
 
         contains_suffix = [sample for sample in acc_list if self.args.suffix in sample]
         if len(contains_suffix) == 0:
-            raise IOError("Incorrect suffix specified for forward pass fastq files in path {0} Check the -suffix argument".format(path))
+            raise IOError("Incorrect suffix ({0}) specified for forward pass fastq files ".format(self.args.suffix) +
+                          "in path {0} Check the -suffix argument".format(path))
         elif len(contains_suffix) * 2 != len(acc_list):
-            raise IOError("Incorrect suffix specified for forward pass fastq files in path {0}. Check that all fastq files have the same"
-                          "suffix. Check the -suffix argument".format(path))
+            raise IOError("Incorrect suffix ({0}) specified for forward pass fastq files ".format(self.args.suffix) +
+                          "in path {0}. Check that all fastq files have the same suffix.".format(self.args.path) +
+                          "Check the -suffix argument")
 
         # sort list alphanumerically
         acc_list.sort()
@@ -72,8 +74,11 @@ class ReadRecruiter:
             acc = os.path.basename(sample[0])
             acc_bam_path_stem = os.path.join(self.bam_dir_path, acc)
 
+            quiet_addon = ""
             if self.args.verbosity:
-                print("\n working on sample:", acc, "\n")
+                print("\nworking on sample:", acc, "\n")
+            else:
+                quiet_addon = "--quiet"
 
             # only run bowtie2 if .bam.stats file doesn't exist
             if not os.path.exists(os.path.expanduser(os.path.join(self.stats_dir_path, "{0}.bam.stats".format(acc)))):
@@ -81,12 +86,12 @@ class ReadRecruiter:
                 threads_addon = ""
                 if self.args.threads:
                     threads_addon = "--threads {}".format(self.args.threads)
-                # command = 'bowtie2 {3} -x "{0}" -1 "{4}" -2 "{5}" ' \
-                #           '--no-unal -S "{2}.sam"'.format(self.index_dir_path, acc_path, acc, threads_addon, r1_path, r2_path)
 
-                command = 'bowtie2 {0} -x "{1}" -1 "{2}" -2 "{3}" ' \
+                command = 'bowtie2 {5} {0} -x "{1}" -1 "{2}" -2 "{3}" ' \
                           '--no-unal -S "{4}.sam"'.format(threads_addon, self.index_dir_path, sample[1], sample[2], 
-                                                          acc_bam_path_stem)
+                                                              acc_bam_path_stem, quiet_addon)
+                if self.args.verbosity:
+                    print("mapping reads with the following command: {}\n".format(command))
                 subprocess.run(command, shell=True)
 
                 # generate stats_dir

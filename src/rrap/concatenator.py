@@ -11,10 +11,13 @@ class Concatenator:
         # replace contigs with file name
 
         # delete cat file if it already exists
-        print("checking if allgenome_cat file exists:", self.cat_file_name)
         if os.path.exists(self.cat_file_name):
-            print("deleting and recreating cat file")
+            if self.args.verbosity:
+                print("deleting preexisting concatenated file: {0}".format(self.cat_file_name))
             subprocess.run('rm -f {0}'.format(self.cat_file_name), shell=True)
+
+        if self.args.verbosity:
+            print("concatenating genomes from the dir {0}".format(self.args.rg))
 
         if self.args.contig_merge:
             # get list of all ref genome file paths

@@ -88,6 +88,8 @@ class Controller:
                 self.visualizer.plot_heatmaps()
         else:
             print("\n---------skipped visualization-------------")
+        
+        print("\n---------RRAP complete-------------")
 
 
     def add_arguments(self):
@@ -137,8 +139,8 @@ class Controller:
         self.options.add_argument("--extra-vis", default=False, dest='extra_vis',
                                   action='store_true', 
                                   help='create csv with normalized RPKM values (log10) and plot heatmap using normalized values')
-        self.options.add_argument("-v", default=False, dest='verbosity',
-                                  action='store_true', help="more verbose output in terms of what the program is doing")
+        self.options.add_argument("-q", default=True, dest='verbosity',
+                                  action='store_false', help="more verbose output in terms of what the program is doing")
 
         self.args = self.p.parse_args()
         

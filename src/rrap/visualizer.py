@@ -12,6 +12,9 @@ class Visualizer:
         self.plot_heatmaps()
 
     def plot_heatmaps(self):
+        if self.args.verbosity:
+            print("calculating RPKM values with log normalization and generating heatmap with rpkm_heater:")
+
         # make appropriate dir
         rpkm_output_dir = self.create_rpkm_output_dir()
 
@@ -36,6 +39,8 @@ class Visualizer:
         subprocess.run(cmd, shell=True)
 
     def calculate_rpkm(self):
+        if self.args.verbosity:
+            print("calculating RPKM values without log normalization:")
         # make appropriate dir
         rpkm_output_dir = self.create_rpkm_output_dir()
 

@@ -37,7 +37,6 @@ class TestOutputs(unittest.TestCase):
                     os.path.join(tests_dir, 'output'), 
                     '-n', 
                     'test', 
-                    '-v',
                     '--merge-contigs', 
                     '--extra-vis',
                     '-suffix', 
@@ -47,6 +46,7 @@ class TestOutputs(unittest.TestCase):
         # run through entire rrap pipeline
         with patch("sys.argv", rrap_cmd):
             controller.main()
+        print("\n")
 
     def test_concatenating_files(self):
         # use relative paths
@@ -77,8 +77,8 @@ class TestOutputs(unittest.TestCase):
         # use relative paths
         bin_dir = os.path.dirname(__file__)
         bam_test_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'bam', 'test')
-        files = ['ERR864077.bam', 'SRR11803377.bam', 'SRR11803378.bam', 'reads.bam', 
-                 'ERR864077.bam.bai', 'SRR11803377.bam.bai', 'SRR11803378.bam.bai', 
+        files = ['ERR864077.bam', 'SRR11803378.bam', 'reads.bam', 
+                 'ERR864077.bam.bai', 'SRR11803378.bam.bai', 
                  'reads.bam.bai']
         
         # compare files
@@ -90,8 +90,7 @@ class TestOutputs(unittest.TestCase):
         bin_dir = os.path.dirname(__file__)
         stats_val_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'stats', 'val')
         stats_test_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'stats', 'test')
-        files = ['ERR864077.bam.stats', 'SRR11803377.bam.stats', 
-                 'SRR11803378.bam.stats', 'reads.bam.stats']
+        files = ['ERR864077.bam.stats', 'SRR11803378.bam.stats', 'reads.bam.stats']
         
         # compare files
         for file in files:

@@ -13,10 +13,16 @@ class Indexer:
             threads_addon = ""
             if self.args.threads:
                 threads_addon = "--threads {}".format(self.args.threads)
+        
+            quiet_addon = ""
             if self.args.verbosity:
-                print("Attempting to run command:")
-                print("bowtie2-build {0} {1}".format(self.cat_file_path, self.output_path, threads_addon))
-            subprocess.run("bowtie2-build {0} {1}".format(self.cat_file_path, self.output_path, threads_addon),
+                print("Running the following command:")
+                print("bowtie2-build {0} {1}\n".format(self.cat_file_path, self.output_path, threads_addon))
+            else:
+                quiet_addon = "--quiet"
+
+            subprocess.run("bowtie2-build {3} {2} {0} {1}".format(self.cat_file_path, self.output_path, 
+                                                                  threads_addon, quiet_addon),
                            shell=True)
         else:
             raise Exception("reference genome dir not specified")

@@ -21,6 +21,11 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap, Normalize
 import matplotlib.patches as patches
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+import sys
+
+if not sys.warnoptions:
+    import warnings
+    warnings.simplefilter("ignore")
 
 parser = argparse.ArgumentParser(prog='rpkm_heater',\
 formatter_class=argparse.RawDescriptionHelpFormatter,\
@@ -130,7 +135,8 @@ if args.clear_all:
 	subprocess.call("rm -rf "+args.o+"; mkdir "+args.o, shell=True)
 	subprocess.call("chmod 777 "+args.o, shell=True)
 else:
-	subprocess.call("mkdir "+args.o, shell=True)
+	if not os.path.isdir(args.o):
+		subprocess.call("mkdir "+args.o, shell=True)
 	subprocess.call("chmod 777 "+args.o, shell=True)
 
 #Appending *.stats to df#
