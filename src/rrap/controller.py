@@ -121,8 +121,8 @@ class Controller:
                                   "NOTE: suffixes that contain a dash must specify '--' as an escape character e.g. '-suffix \"-- -QUALITY_PASSED_R1.fastq\"'")
 
         # specify optional args
-        self.options.add_argument("--merge-contigs", default=False, dest='contig_merge',
-                                  action='store_true', help="Concatenate contigs under individual organisms")
+        self.options.add_argument("--skip-merge-contigs", default=True, dest='contig_merge',
+                                  action='store_false', help="Concatenate contigs under individual organisms")
         self.options.add_argument("--skip-indexing", default=False, dest='index_pass',
                                   action='store_true', 
                                   help='Specify if the indexing step has already been completed and can be skipped. \

@@ -36,8 +36,7 @@ class TestOutputs(unittest.TestCase):
                     '-o', 
                     os.path.join(tests_dir, 'output'), 
                     '-n', 
-                    'test', 
-                    '--merge-contigs', 
+                    'test',  
                     '--extra-vis',
                     '-suffix', 
                     '_toy_R1.fastq']
