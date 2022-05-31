@@ -17,7 +17,6 @@ src/rrap.egg-info/dependency_links.txt
 src/rrap.egg-info/not-zip-safe
 src/rrap.egg-info/requires.txt
 src/rrap.egg-info/top_level.txt
-tests/metaG_paths.txt
 tests/metaGs/dir_01/reads_toy_R1.fastq
 tests/metaGs/dir_01/reads_toy_R2.fastq
 tests/metaGs/dir_02/ERR864077_toy_R1.fastq
