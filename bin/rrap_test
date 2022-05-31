@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-#from rrap import main
 from unittest.mock import patch
 import unittest
 import filecmp
@@ -27,6 +26,13 @@ class TestOutputs(unittest.TestCase):
         for sub_dir in dirs:
             if os.path.isdir(os.path.join(output_dir, sub_dir)):
                 subprocess.run('rm -rf {0}'.format(os.path.join(output_dir, sub_dir)), shell=True)
+
+        # rewrite metaG_paths.txt so that it lists relative paths (generalizable to any system)
+        # create -i metaG_paths.txt_dir
+        lines = [os.path.join(tests_dir, 'metaGs', 'dir_01'), os.path.join(tests_dir, 'metaGs', 'dir_02')]
+        with open(os.path.join(tests_dir, 'metaG_paths.txt'), 'w') as f:
+            f.write("\n".join(lines))
+            f.close()
 
         rrap_cmd = ['rrap', 
                     '-i',
