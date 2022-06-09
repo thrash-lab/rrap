@@ -82,9 +82,9 @@ class TestOutputs(unittest.TestCase):
         # use relative paths
         bin_dir = os.path.dirname(__file__)
         bam_test_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'bam', 'test')
-        files = ['ERR864077.bam', 'SRR11803378.bam', 'reads.bam', 
+        files = ['ERR864077.bam', 'SRR11803378.bam', 'ERR864073.bam', 
                  'ERR864077.bam.bai', 'SRR11803378.bam.bai', 
-                 'reads.bam.bai']
+                 'ERR864073.bam.bai']
         
         # compare files
         for file in files:
@@ -95,7 +95,7 @@ class TestOutputs(unittest.TestCase):
         bin_dir = os.path.dirname(__file__)
         stats_val_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'stats', 'val')
         stats_test_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'stats', 'test')
-        files = ['ERR864077.bam.stats', 'SRR11803378.bam.stats', 'reads.bam.stats']
+        files = ['ERR864077.bam.stats', 'SRR11803378.bam.stats', 'ERR864073.bam.stats']
         
         # compare files
         for file in files:

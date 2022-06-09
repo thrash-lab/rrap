@@ -122,7 +122,7 @@ class Controller:
 
         # specify optional args
         self.options.add_argument("--skip-merge-contigs", default=True, dest='contig_merge',
-                                  action='store_false', help="Concatenate contigs under individual organisms")
+                                  action='store_false', help="do not concatenate contigs for individual organisms")
         self.options.add_argument("--skip-indexing", default=False, dest='index_pass',
                                   action='store_true', 
                                   help='Specify if the indexing step has already been completed and can be skipped. \

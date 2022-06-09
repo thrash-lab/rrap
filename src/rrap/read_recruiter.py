@@ -36,7 +36,7 @@ class ReadRecruiter:
     def find_acc(self, path):
         # get list of all fastq files (r1 and r2)
         # self.args.suffix.split(".")[-1] denotes the fastq extension e.g.fastq or fq
-        cmd = subprocess.run('ls {0}'.format(os.path.join(path, "*" + self.args.suffix.split(".")[-1])),
+        cmd = subprocess.run('ls {0}'.format(os.path.join(path, "*" + "." + self.args.suffix.split(".")[-1])),
                              shell=True, capture_output=True, text=True)
         acc_list = cmd.stdout.split()
         acc_list = [line.rstrip() for line in acc_list]
@@ -49,7 +49,7 @@ class ReadRecruiter:
                           "in path {0} Check the -suffix argument".format(path))
         elif len(contains_suffix) * 2 != len(acc_list):
             raise IOError("Incorrect suffix ({0}) specified for forward pass fastq files ".format(self.args.suffix) +
-                          "in path {0}. Check that all fastq files have the same suffix.".format(self.args.path) +
+                          "in path {0}. Check that all fastq files have the same suffix.".format(path) +
                           "Check the -suffix argument")
 
         # sort list alphanumerically

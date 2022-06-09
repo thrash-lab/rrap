@@ -1,0 +1,2 @@
+/Users/connerkojima/thrash/cykojima/rrap/bin/../tests/metaGs/dir_01
+/Users/connerkojima/thrash/cykojima/rrap/bin/../tests/metaGs/dir_02
