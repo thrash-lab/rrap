@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='rrap',
-      version='1.1.3',
+      version='1.1.4',
       description='A metagenomic read recruitment data pipeline',
       url='https://github.com/Kojiconner/rrap_metag_pkg/',
       author='Conner Kojima',
@@ -34,7 +34,7 @@ setup(name='rrap',
                   ("tests/output/index/val", ["tests/output/index/val/val.1.bt2", "tests/output/index/val/val.2.bt2",
                                                "tests/output/index/val/val.3.bt2", "tests/output/index/val/val.4.bt2",
                                                "tests/output/index/val/val.rev.1.bt2", "tests/output/index/val/val.rev.2.bt2"]),
-                  ("tests/output/rpkm/val", ["tests/output/rpkm/val/val_counts.csv", "tests/output/rpkm/val/val_rpkm.csv",
+                  ("tests/output/rpkm/val", ["tests/output/rpkm/val/val_counts.csv", "tests/output/rpkm/val/val_rpkm_log10.csv",
                                                "tests/output/rpkm/val/val_rpkm_noLog.csv"]),
                   ("tests/output/stats/val", ["tests/output/stats/val/ERR864077.bam.stats", "tests/output/stats/val/SRR11803378.bam.stats",
                                                "tests/output/stats/val/ERR864073.bam.stats"])])
