@@ -6,6 +6,7 @@ import filecmp
 import os
 import subprocess
 from rrap import controller
+import pandas as pd
 
 class TestOutputs(unittest.TestCase):
 
@@ -108,14 +109,15 @@ class TestOutputs(unittest.TestCase):
         bin_dir = os.path.dirname(__file__)
         rpkm_val_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'rpkm', 'val')
         rpkm_test_dir = os.path.join(bin_dir, "..", 'tests', 'output', 'rpkm', 'test')
-        val_files = ['val_counts.csv', 'val_rpkm.csv', 'val_rpkm_noLog.csv']
-        test_files = ['test_counts.csv', 'test_rpkm.csv', 'test_rpkm_noLog.csv']
-        
-        # compare files
-        for val_file, test_file in zip(val_files, test_files):
-            self.assertTrue(filecmp.cmp(os.path.join(rpkm_val_dir, val_file), 
-                                        os.path.join(rpkm_test_dir, test_file), 
-                                        shallow=False)) 
+        val_file = 'val_rpkm_noLog.csv'
+        test_file = 'test_rpkm_noLog.csv'
+
+        val_csv = pd.read_csv(os.path.join(rpkm_val_dir, val_file))
+        test_csv = pd.read_csv(os.path.join(rpkm_test_dir, test_file))
+
+        self.assertTrue(val_csv.equals(test_csv))
+
+
 
 
 if __name__ == "__main__":

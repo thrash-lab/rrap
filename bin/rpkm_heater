@@ -285,7 +285,7 @@ if args.count:
 		df_rpkm = df_rpkm.T
 		if args.verbosity:
 			print(df_rpkm)
-		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
+		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm_log10.csv", sep="\t")
 
 	elif args.sort_samples:
 		sorted = pd.read_csv(args.sort_samples, sep="\t")
@@ -298,7 +298,7 @@ if args.count:
 		df_rpkm = df_rpkm[sorted_list]
 		if args.verbosity:
 			print(df_rpkm)
-		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
+		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm_log10.csv", sep="\t")
 
 	elif args.sort_gen:
 		sorted = pd.read_csv(args.sort_samples, sep="\t")
@@ -311,7 +311,7 @@ if args.count:
 		df_rpkm = df_rpkm[sorted_list]
 		if args.verbosity:
 			print(df_rpkm)
-		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
+		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm_log10.csv", sep="\t")
 
 
 elif args.map:
@@ -460,7 +460,7 @@ elif args.map:
 			print(df_rpkm)
 		df_rpkm = np.log10(df_rpkm)
 		df_rpkm[df_rpkm < 0] = 0
-		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
+		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm_log10.csv", sep="\t")
 
 
 
@@ -579,7 +579,7 @@ elif args.map:
 			print(df_rpkm)
 		df_rpkm = np.log10(df_rpkm)
 		df_rpkm[df_rpkm < 0] = 0
-		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
+		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm_log10.csv", sep="\t")
 
 
 		#Heatmap sorted by Ocean and depth#
@@ -696,7 +696,7 @@ elif args.map:
 #		df_rpkm = df_rpkm.T
 		df_rpkm = np.log10(df_rpkm)
 		df_rpkm[df_rpkm < 0] = 0
-		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
+		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm_log10.csv", sep="\t")
 
 		#Heatmap sorted by Ocean and depth#
 		if args.colors:
@@ -802,7 +802,7 @@ elif args.map:
 
 		df_rpkm = np.log10(df_rpkm)
 		df_rpkm[df_rpkm < 0] = 0
-		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm.csv", sep="\t")
+		df_rpkm.to_csv(args.o+"/"+project_name+"_rpkm_log10.csv", sep="\t")
 
 		if args.colors:
 			if args.colors == 'plasma':
