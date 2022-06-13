@@ -48,10 +48,9 @@ tests/output/index/val/val.4.bt2
 tests/output/index/val/val.rev.1.bt2
 tests/output/index/val/val.rev.2.bt2
 tests/output/rpkm/test/test_counts.csv
-tests/output/rpkm/test/test_rpkm.csv
 tests/output/rpkm/test/test_rpkm_noLog.csv
 tests/output/rpkm/val/val_counts.csv
-tests/output/rpkm/val/val_rpkm.csv
+tests/output/rpkm/val/val_rpkm_log10.csv
 tests/output/rpkm/val/val_rpkm_noLog.csv
 tests/output/stats/test/ERR864077.bam.stats
 tests/output/stats/test/SRR11803378.bam.stats

@@ -76,9 +76,14 @@ class Visualizer:
 
                 # add rpkm data to overall dataframe
                 df = pd.concat([df, rpkm_df], axis=1, join='outer')
+        
+        # make sure column and index orderings are consistent across runs
+        df = df.sort_values("ACC", axis=1)
+        df = df.sort_index()
 
         if self.args.verbosity:
             print(df, "\n")
+
         df.to_csv(os.path.join(rpkm_output_dir, self.args.n + "_rpkm_noLog.csv"), index_label='ACC')
 
     def create_rpkm_output_dir(self):
