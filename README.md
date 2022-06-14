@@ -38,3 +38,8 @@ of 5000 reads for each metagenome. The subsetting was performed with seqkit (5).
 3. Fortunato, C. S., & Crump, B. C. (2015). Microbial gene abundance and expression patterns across a river to ocean salinity gradient. PLoS One, 10(11), e0140578.
 4. Sakowski, E. G., Arora-Williams, K., Tian, F., Zayed, A. A., Zablocki, O., Sullivan, M. B., & Preheim, S. P. (2021). Interaction dynamics and virus–host range for estuarine actinophages captured by epicPCR. Nature Microbiology, 6(5), 630-642.
 5. Shen, W., Le, S., Li, Y., & Hu, F. (2016). SeqKit: a cross-platform and ultrafast toolkit for FASTA/Q file manipulation. PloS one, 11(10), e0163962.
+
+## Links to Other Repositories
+https://github.com/samtools/samtools
+https://github.com/BenLangmead/bowtie2
+https://github.com/thrash-lab/rpkm_heater
