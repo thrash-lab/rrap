@@ -24,4 +24,17 @@ through the terminal. The terminal will automatically run the command:
  -o <path_to_test_data_dir>/output -n test --merge-contigs --extra-vis -suffix 
 _toy_R1.fastq` which will walk the user through processing a sample dataset. In
 addition, the program will run some tests to ensure that *RRAP* is running as
-intended. 
+intended. More specifically, it will use the following reference genomes: HIMB59 and 
+HTCC1062 (1, 2). The test command will align reads from the metagenomes with the 
+following accessions: ERR864073, ERR864077, SRR11803378 (3, 4). After mapping reads, 
+RRAP will report RPKM values and confirm that the program is working as intended.
+
+NOTE: Because metagenomic files require a lot of storage, RRAP uses a randomized subset
+of 5000 reads for each metagenome. The subsetting was performed with seqkit (5).
+
+### References (for dataset)
+1. Grote, J., Thrash, J. C., Huggett, M. J., Landry, Z. C., Carini, P., Giovannoni, S. J., & Rappé, M. S. (2012). Streamlining and core genome conservation among highly divergent members of the SAR11 clade. MBio, 3(5), e00252-12.
+2. Rappé, M. S., Connon, S. A., Vergin, K. L., & Giovannoni, S. J. (2002). Cultivation of the ubiquitous SAR11 marine bacterioplankton clade. Nature, 418(6898), 630-633.
+3. Fortunato, C. S., & Crump, B. C. (2015). Microbial gene abundance and expression patterns across a river to ocean salinity gradient. PLoS One, 10(11), e0140578.
+4. Sakowski, E. G., Arora-Williams, K., Tian, F., Zayed, A. A., Zablocki, O., Sullivan, M. B., & Preheim, S. P. (2021). Interaction dynamics and virus–host range for estuarine actinophages captured by epicPCR. Nature Microbiology, 6(5), 630-642.
+5. W Shen, S Le, Y Li*, F Hu*. SeqKit: a cross-platform and ultrafast toolkit for FASTA/Q file manipulation. PLOS ONE. doi:10.1371/journal.pone.0163962.
