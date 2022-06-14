@@ -40,6 +40,6 @@ of 5000 reads for each metagenome. The subsetting was performed with seqkit (5).
 5. Shen, W., Le, S., Li, Y., & Hu, F. (2016). SeqKit: a cross-platform and ultrafast toolkit for FASTA/Q file manipulation. PloS one, 11(10), e0163962.
 
 ## Links to Other Repositories
-https://github.com/samtools/samtools
-https://github.com/BenLangmead/bowtie2
-https://github.com/thrash-lab/rpkm_heater
+* https://github.com/samtools/samtools
+* https://github.com/BenLangmead/bowtie2
+* https://github.com/thrash-lab/rpkm_heater
