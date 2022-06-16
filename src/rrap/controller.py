@@ -101,9 +101,10 @@ class Controller:
         self.arg_groups.extend([self.inputs, self.outputs, self.optional])
 
         # Add the arguments
-        self.inputs.add_argument('-i', help='text file of all dir paths that contain cleaned metaG fna files', 
+        self.inputs.add_argument('-i', help='text file of all dir paths that contain cleaned metaG fna files. The txt file \n' 
+                                 'should contain a dir path on each line', 
                                  required=True)
-        self.inputs.add_argument('-crg', help=' path for concatenated reference genome fa file', 
+        self.inputs.add_argument('-crg', help=' path to concatenated reference genome fa file (if ', 
                                  required=False)
         self.inputs.add_argument('-rg', help='input directory for reference genomes', 
                                  required=True)
@@ -111,8 +112,8 @@ class Controller:
                                   required=True)
         self.inputs.add_argument('-n', help='name of the project', required=True, metavar='project name')
 
-        self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes (if --extra-vis flag is used)', required=False)
-        self.inputs.add_argument('-sort_samples', help='txt file of sorted samples (if --extra-vis flag is used)', required=False)
+        self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes in tab delimited list for RPKM heatmap', required=False)
+        self.inputs.add_argument('-sort_samples', help='txt file of sorted samples in tab delimited list for RPKM heatmap', required=False)
         self.inputs.add_argument("--threads", help='number of available threads', required=False)
         self.inputs.add_argument("-suffix", default="_pass_1.fastq", 
                                   help="everything in metaG file name that is after the acc for the forward (R1) read files \n"
@@ -136,9 +137,9 @@ class Controller:
         self.options.add_argument("--skip-vis", default=False, dest='vis_pass',
                                   action='store_true',
                                   help='Specify if the visualization step can be skipped')
-        self.options.add_argument("--extra-vis", default=False, dest='extra_vis',
+        self.options.add_argument("--heat-map", default=False, dest='extra_vis',
                                   action='store_true', 
-                                  help='plot heatmap using log10 normalized values')
+                                  help='plot heatmap with RPKM_HEATER v1.1 using log10 normalized values')
         self.options.add_argument("-q", default=True, dest='verbosity',
                                   action='store_false', help="more verbose output in terms of what the program is doing")
 

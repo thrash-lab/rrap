@@ -6,16 +6,15 @@ the user through the process of concatenating genomes, creating an index, aligni
 reads, and extracting RPKM values from BAM files. 
 
 ## Obtaining RRAP
-
-*RRAP* is available as a conda package. The recommended method of 
-installation is with the following command `conda install -c kojiconner rrap`.
+*RRAP* is available as a conda package. Run the command `conda install 
+-c kojiconner -c bioconda rrap` to install RRAP. 
 
 ## Usage
-
 The most common way to use *RRAP* is with some variation of the following command:
-`rrap -i  <path_to_txt_file_that_contains_metagenome_path_dirs> -rg 
-<path_to_reference_genome_dir> -o <path_to_output_dir> -n <project_name> 
---extra-vis -suffix <suffix>`.
+`rrap -i  <path_to_txt_file_that_contains_metagenome_dir_paths> -rg 
+<reference_genome_dir_path> -o <output_dir_path> -n <project_name> 
+--heat-map -suffix <suffix>`. The txt file should contain a metagenome dir path
+on each line. 
 
 ## Quickstart
 The quickest way to get started with *RRAP* is to run the command `rrap_test`
