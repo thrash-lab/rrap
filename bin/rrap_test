@@ -44,7 +44,7 @@ class TestOutputs(unittest.TestCase):
                     os.path.join(tests_dir, 'output'), 
                     '-n', 
                     'test',  
-                    '--extra-vis',
+                    '--heat-map',
                     '-suffix', 
                     '_toy_R1.fastq']
 

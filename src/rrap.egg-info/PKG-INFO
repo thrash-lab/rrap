@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: rrap
-Version: 1.2.0
+Version: 1.2.1
 Summary: A metagenomic read recruitment data pipeline
 Home-page: https://github.com/Kojiconner/rrap_metag_pkg/
 Author: Conner Kojima
