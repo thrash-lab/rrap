@@ -1,6 +1,9 @@
 import subprocess
 import os
 import pandas as pd
+import numpy as np
+import sys
+
 
 class Visualizer:
     def __init__(self, args, rpkm_heater_path, stats_dir_path):
@@ -81,10 +84,23 @@ class Visualizer:
         df = df.sort_values("ACC", axis=1)
         df = df.sort_index()
 
+        # ignore divide by 0 warnings to by mumpy
+        if not sys.warnoptions:
+            import warnings
+            warnings.simplefilter("ignore")
+
+        # create log file
+        df_log10 = np.log10(df)
+        # revert -inf values (i.e. log10(0) to 0)
+        df_log10[df_log10 < 0 ] = 0
+
         if self.args.verbosity:
             print(df, "\n")
+            print(df_log10, "\n")
 
         df.to_csv(os.path.join(rpkm_output_dir, self.args.n + "_rpkm_noLog.csv"), index_label='ACC')
+        df_log10.to_csv(os.path.join(rpkm_output_dir, self.args.n + "_rpkm_log10.csv"), index_label='ACC')
+        
 
     def create_rpkm_output_dir(self):
         # make appropriate dir

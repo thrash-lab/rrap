@@ -138,7 +138,7 @@ class Controller:
                                   help='Specify if the visualization step can be skipped')
         self.options.add_argument("--extra-vis", default=False, dest='extra_vis',
                                   action='store_true', 
-                                  help='create csv with normalized RPKM values (log10) and plot heatmap using normalized values')
+                                  help='plot heatmap using log10 normalized values')
         self.options.add_argument("-q", default=True, dest='verbosity',
                                   action='store_false', help="more verbose output in terms of what the program is doing")
 
