@@ -6,8 +6,14 @@ the user through the process of concatenating genomes, creating an index, aligni
 reads, and extracting RPKM values from BAM files. 
 
 ## Obtaining RRAP
-*RRAP* is available as a conda package. Run the command `conda install 
--c kojiconner -c bioconda rrap` to install RRAP. 
+*RRAP* is available as a conda package. Create and activate a new conda environment 
+with the following commands:
+`conda create -n rrap_env`  
+`conda activate rrap_env`  
+Next, RRAP can be installed with the command:
+`conda install -c kojiconner -c bioconda rrap`
+The RRAP environment can be exited with the `conda deactivate` command. Just remember
+to use `conda activate rrap_env` to startup RRAP again.
 
 ## Usage
 The most common way to use *RRAP* is with some variation of the following command:
