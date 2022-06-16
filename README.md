@@ -36,7 +36,7 @@ of 5000 reads for each metagenome. The subsetting was performed with seqkit (5).
 
 ### References (for dataset)
 1. Grote, J., Thrash, J. C., Huggett, M. J., Landry, Z. C., Carini, P., Giovannoni, S. J., & Rappé, M. S. (2012). Streamlining and core genome conservation among highly divergent members of the SAR11 clade. MBio, 3(5), e00252-12.
-2. Rappé, M. S., Connon, S. A., Vergin, K. L., & Giovannoni, S. J. (2002). Cultivation of the ubiquitous SAR11 marine bacterioplankton clade. Nature, 418(6898), 630-633.
+2. Giovannoni, S. J., Tripp, H. J., Givan, S., Podar, M., Vergin, K. L., Baptista, D., Bibbs, L., Eads, J., Richardson, T. H., Noordewier, M., Rappé, M. S., Short, J. M., Carrington, J. C., & Mathur, E. J. (2005). Genome streamlining in a cosmopolitan oceanic bacterium. Science (New York, N.Y.), 309(5738), 1242–1245. https://doi.org/10.1126/science.1114057
 3. Fortunato, C. S., & Crump, B. C. (2015). Microbial gene abundance and expression patterns across a river to ocean salinity gradient. PLoS One, 10(11), e0140578.
 4. Sakowski, E. G., Arora-Williams, K., Tian, F., Zayed, A. A., Zablocki, O., Sullivan, M. B., & Preheim, S. P. (2021). Interaction dynamics and virus–host range for estuarine actinophages captured by epicPCR. Nature Microbiology, 6(5), 630-642.
 5. Shen, W., Le, S., Li, Y., & Hu, F. (2016). SeqKit: a cross-platform and ultrafast toolkit for FASTA/Q file manipulation. PloS one, 11(10), e0163962.
