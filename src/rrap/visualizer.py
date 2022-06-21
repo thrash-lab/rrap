@@ -18,7 +18,7 @@ class Visualizer:
 
     def calculate_rpkm(self):
         if self.args.verbosity:
-            print("calculating RPKM values without log normalization:")
+            print("calculating RPKM values with and without log normalization:")
         # make appropriate dir
         rpkm_output_dir = self.create_rpkm_output_dir()
 
