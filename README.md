@@ -44,4 +44,3 @@ of 5000 reads for each metagenome. The subsetting was performed with seqkit (5).
 ## Links to Other Repositories
 * https://github.com/samtools/samtools
 * https://github.com/BenLangmead/bowtie2
-* https://github.com/thrash-lab/rpkm_heater

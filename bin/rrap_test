@@ -42,9 +42,8 @@ class TestOutputs(unittest.TestCase):
                     os.path.join(tests_dir, 'reference'), 
                     '-o', 
                     os.path.join(tests_dir, 'output'), 
-                    '-n', 
+                    '-n',
                     'test',  
-                    '--heat-map',
                     '-suffix', 
                     '_toy_R1.fastq']
 
@@ -116,7 +115,6 @@ class TestOutputs(unittest.TestCase):
         test_csv = pd.read_csv(os.path.join(rpkm_test_dir, test_file))
 
         self.assertTrue(val_csv.equals(test_csv))
-
 
 
 

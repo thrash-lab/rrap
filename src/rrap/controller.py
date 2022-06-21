@@ -49,6 +49,7 @@ class Controller:
 
         self.rpkm_heater_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rpkm_heater.py")
         self.stats_dir_path = None
+        self.tot_reads = {}
 
     def run(self):
         self.add_arguments()
@@ -73,19 +74,20 @@ class Controller:
 
         if not self.args.rr_pass:
             print("\n---------read recruitment and data transform-------------")
-            self.read_recruiter = read_recruiter.ReadRecruiter(self.args, os.path.join(self.index_dir_path, self.args.n),
-                                                               self.cat_file_path, self.stats_dir_path,
-                                                               self.bam_dir_path)
-            self.read_recruiter.read_recruit()
         else:
             print("\n---------skipped read recruitment and data transform-------------")
+        
+        # read recruitment module needs to get total reads regardless of whether we are running read recruitment
+        self.read_recruiter = read_recruiter.ReadRecruiter(self.args, os.path.join(self.index_dir_path, self.args.n),
+                                                               self.cat_file_path, self.stats_dir_path,
+                                                               self.bam_dir_path)
+        self.tot_reads = self.read_recruiter.read_recruit()
 
         if not self.args.vis_pass:
             print("\n---------visualization-------------")
-            self.visualizer = visualizer.Visualizer(self.args, self.rpkm_heater_path, self.stats_dir_path)
+            self.visualizer = visualizer.Visualizer(self.args, self.rpkm_heater_path, self.stats_dir_path, self.tot_reads)
             self.visualizer.calculate_rpkm()
-            if self.args.extra_vis:
-                self.visualizer.plot_heatmaps()
+ 
         else:
             print("\n---------skipped visualization-------------")
         
@@ -111,9 +113,6 @@ class Controller:
         self.outputs.add_argument('-o', help='output directory path', 
                                   required=True)
         self.inputs.add_argument('-n', help='name of the project', required=True, metavar='project name')
-
-        self.inputs.add_argument('-sort_gen', help='txt file of sorted genomes in tab delimited list for RPKM heatmap', required=False)
-        self.inputs.add_argument('-sort_samples', help='txt file of sorted samples in tab delimited list for RPKM heatmap', required=False)
         self.inputs.add_argument("--threads", help='number of available threads', required=False)
         self.inputs.add_argument("-suffix", default="_pass_1.fastq", 
                                   help="everything in metaG file name that is after the acc for the forward (R1) read files \n"
@@ -137,9 +136,6 @@ class Controller:
         self.options.add_argument("--skip-vis", default=False, dest='vis_pass',
                                   action='store_true',
                                   help='Specify if the visualization step can be skipped')
-        self.options.add_argument("--heat-map", default=False, dest='extra_vis',
-                                  action='store_true', 
-                                  help='plot heatmap with RPKM_HEATER v1.1 using log10 normalized values')
         self.options.add_argument("-q", default=True, dest='verbosity',
                                   action='store_false', help="more verbose output in terms of what the program is doing")
 
