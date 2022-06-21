@@ -49,7 +49,6 @@ class Controller:
 
         self.rpkm_heater_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rpkm_heater.py")
         self.stats_dir_path = None
-        self.tot_reads = {}
 
     def run(self):
         self.add_arguments()
@@ -81,11 +80,11 @@ class Controller:
         self.read_recruiter = read_recruiter.ReadRecruiter(self.args, os.path.join(self.index_dir_path, self.args.n),
                                                                self.cat_file_path, self.stats_dir_path,
                                                                self.bam_dir_path)
-        self.tot_reads = self.read_recruiter.read_recruit()
+        self.read_recruiter.read_recruit()
 
         if not self.args.vis_pass:
             print("\n---------visualization-------------")
-            self.visualizer = visualizer.Visualizer(self.args, self.rpkm_heater_path, self.stats_dir_path, self.tot_reads)
+            self.visualizer = visualizer.Visualizer(self.args, self.rpkm_heater_path, self.stats_dir_path)
             self.visualizer.calculate_rpkm()
  
         else:
@@ -103,11 +102,11 @@ class Controller:
         self.arg_groups.extend([self.inputs, self.outputs, self.optional])
 
         # Add the arguments
-        self.inputs.add_argument('-i', help='text file of all dir paths that contain cleaned metaG fna files. The txt file \n' 
+        self.inputs.add_argument('-i', help='text file of all dir paths that contain cleaned metaG fastq files. The txt file \n' 
                                  'should contain a dir path on each line', 
                                  required=True)
-        self.inputs.add_argument('-crg', help=' path to concatenated reference genome fa file (if ', 
-                                 required=False)
+        self.inputs.add_argument('-crg', help=' path to concatenated reference genome fa file (RRAP will use this file instead \n'
+                                 'of generating one.', required=False)
         self.inputs.add_argument('-rg', help='input directory for reference genomes', 
                                  required=True)
         self.outputs.add_argument('-o', help='output directory path', 
@@ -116,7 +115,7 @@ class Controller:
         self.inputs.add_argument("--threads", help='number of available threads', required=False)
         self.inputs.add_argument("-suffix", default="_pass_1.fastq", 
                                   help="everything in metaG file name that is after the acc for the forward (R1) read files \n"
-                                  "e.g. (-QUALITY_PASSED_R1.fastq for <sample_acc>-QUALITY_PASSED_R1.fastq) \n" 
+                                  "e.g. (The suffix is '-QUALITY_PASSED_R1.fastq' for file '<sample_acc>-QUALITY_PASSED_R1.fastq)' \n" 
                                   "Otherwise, RRAP assumes that the forward pass file name is formatted as <acc>_pass_1.fastq"
                                   "NOTE: suffixes that contain a dash must specify '--' as an escape character e.g. '-suffix \"-- -QUALITY_PASSED_R1.fastq\"'")
 
@@ -127,15 +126,15 @@ class Controller:
                                   action='store_true', 
                                   help='Specify if the indexing step has already been completed and can be skipped. \
                                         If this flag is used, please check that bowtie2 index files exist e.g. \
-                                        <output_dir_path>/index_dir/<project_name>.x.bt2')
+                                        <output_dir_path>/index/<project_name>/<project_name>.x.bt2')
         self.options.add_argument("--skip-rr", default=False, dest='rr_pass',
                                   action='store_true',
                                   help='Specify if the read recruitment step has already been completed and can be' \
                                        'skipped. If this flag is used, please check that read recruitment files exist' \
-                                       'e.g. <output_dir_path>/')
-        self.options.add_argument("--skip-vis", default=False, dest='vis_pass',
+                                       'e.g. <output_dir_path>/stats/<project_name>/*.bam.stats')
+        self.options.add_argument("--skip-rpkm", default=False, dest='vis_pass',
                                   action='store_true',
-                                  help='Specify if the visualization step can be skipped')
+                                  help='Specify if RPKM calculations can be skipped')
         self.options.add_argument("-q", default=True, dest='verbosity',
                                   action='store_false', help="more verbose output in terms of what the program is doing")
 

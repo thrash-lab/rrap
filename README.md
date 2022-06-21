@@ -26,13 +26,14 @@ through the terminal. The terminal will automatically run the command:
  -o <path_to_test_data_dir>/output -n test --merge-contigs --extra-vis -suffix 
 _toy_R1.fastq` which will walk the user through processing a sample dataset. In
 addition, the program will run some tests to ensure that *RRAP* is running as
-intended. More specifically, it will use the following reference genomes: HIMB59 and 
+intended. The sample dataset contains the following reference genomes: HIMB59 and 
 HTCC1062 (1, 2). The test command will align reads from the metagenomes with the 
 following accessions: ERR864073, ERR864077, SRR11803378 (3, 4). After mapping reads, 
 RRAP will report RPKM values and confirm that the program is working as intended.
 
 NOTE: Because metagenomic files require a lot of storage, RRAP uses a randomized subset
-of 5000 reads for each metagenome. The subsetting was performed with seqkit (5).
+of 10,000 reads from the metagenomes ERR864073 and SRR11803378. Likewise, 20,000 reads 
+were subset from the metagenome ERR864077. Subsetting was performed with seqkit (5).
 
 ### References (for dataset)
 1. Grote, J., Thrash, J. C., Huggett, M. J., Landry, Z. C., Carini, P., Giovannoni, S. J., & Rappé, M. S. (2012). Streamlining and core genome conservation among highly divergent members of the SAR11 clade. MBio, 3(5), e00252-12.

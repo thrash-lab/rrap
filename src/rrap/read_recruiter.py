@@ -1,6 +1,8 @@
 import subprocess
 import os
 from pathlib import Path
+import pandas as pd
+import csv
 
 class ReadRecruiter:
     def __init__(self, args, index_dir_path, cat_file_path, stats_dir_path, bam_dir_path):
@@ -9,7 +11,7 @@ class ReadRecruiter:
         self.cat_file_path = cat_file_path
         self.stats_dir_path = stats_dir_path
         self.bam_dir_path = bam_dir_path
-        self.tot_reads = {}
+        self.acc_already_counted = []
 
         # detect -- escape characters
         if self.args.suffix[0:2] == "--":
@@ -17,6 +19,21 @@ class ReadRecruiter:
 
     def read_recruit(self):
         if self.args.i:
+
+            # make sure that read counts file exists and create one if it does not
+            if not os.path.isfile(os.path.join(self.args.o, "total_reads_{0}.csv".format(self.args.n))):
+                print('making read counts file: ', os.path.join(self.args.o, "total_reads_{0}.csv".format(self.args.n)))
+
+                with open(os.path.join(self.args.o, "total_reads_{0}.csv".format(self.args.n)), 'w') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(['ACC', 'total reads'])
+                self.acc_alread_counted = []
+            else:
+                # get list of acc already in total reads csv
+                self.acc_alread_counted = pd.read_csv(os.path.join(self.args.o, 
+                                                                "total_reads_{0}.csv".format(self.args.n)))['ACC'].to_list()
+
+
 
             # retrieve individual clean dir paths from -i flag
             with open(self.args.i) as file:
@@ -36,10 +53,6 @@ class ReadRecruiter:
 
         else:
             pass
-
-        # report total read counts
-        return self.tot_reads
-        
 
     def find_acc(self, path):
         # get list of all fastq files (r1 and r2)
@@ -110,8 +123,13 @@ class ReadRecruiter:
                 if self.args.verbosity and not self.args.rr_pass:
                     print("previous file exists for", acc, "not running read recruitment")
             
-            # count reads
-            self.tot_reads[acc] = self.count_reads(sample[1])*2
+            # check if total reads for acc has been counted
+            #if not write new line to csv
+            if acc not in self.acc_alread_counted:
+                with open(os.path.join(self.args.o, "total_reads_{0}.csv".format(self.args.n)), 'a') as f:
+                    writer = csv.writer(f)
+                    writer.writerow([acc, self.count_reads(sample[1])*2])
+                self.acc_alread_counted.append(acc)
 
     def count_reads(self, file):
         if "fastq.gz" in file or "fq.gz" in file:

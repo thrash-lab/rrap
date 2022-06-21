@@ -6,11 +6,10 @@ import sys
 
 
 class Visualizer:
-    def __init__(self, args, rpkm_heater_path, stats_dir_path, tot_reads):
+    def __init__(self, args, rpkm_heater_path, stats_dir_path):
         self.args = args
         self.rpkm_heater_path = rpkm_heater_path
         self.stats_dir_path = stats_dir_path
-        self.tot_reads = tot_reads
 
     def visualize(self):
         self.plot_heatmaps()
@@ -24,6 +23,7 @@ class Visualizer:
 
         # df holds rpkm values with genome acc as the row names and metaG acc as the headers
         df = pd.DataFrame()
+        tot_reads_df = pd.read_csv(os.path.join(self.args.o, "total_reads_{0}.csv".format(self.args.n)))
 
         # loop through files with bam.stats suffix in generated stats dir
         for file in os.listdir(self.stats_dir_path):
@@ -42,13 +42,13 @@ class Visualizer:
                 rpkm['ACC'] = file[:-10]
 
                 # find tot_sample_reads
-                tot_sample_reads = self.tot_reads[rpkm['ACC']]
+                total_sample_reads = int(tot_reads_df.loc[tot_reads_df["ACC"] == rpkm['ACC']]['total reads'])
 
                 # specify rpkm values for each genome for this specific metaG
                 for i in range(len(entry['genome'])):
                     if entry['genome'][i] != "*":
                         rpkm[entry['genome'][i]] = \
-                            [entry['r_mapped'][i]/((entry['gen_length'][i]/1000)*(tot_sample_reads/1000000))]
+                            [entry['r_mapped'][i]/((entry['gen_length'][i]/1000)*(total_sample_reads/1000000))]
 
                 # convert dict to data frame and transpose
                 rpkm_df = pd.DataFrame(rpkm)
@@ -69,13 +69,11 @@ class Visualizer:
 
         # create log file
         df_log10 = np.log10(df)
-        # revert -inf values (i.e. log10(0) to 0)
-        df_log10[df_log10 < 0 ] = 0
 
         if self.args.verbosity:
             print("RPKM table")
             print(df, "\n")
-            print("RPKM table log10 normalizedl")
+            print("RPKM table log10 normalized")
             print(df_log10, "\n")
 
         df.to_csv(os.path.join(rpkm_output_dir, self.args.n + "_rpkm_noLog.csv"), index_label='ACC')
