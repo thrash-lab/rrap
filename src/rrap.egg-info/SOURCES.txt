@@ -2,7 +2,6 @@ LICENSE
 README.md
 pyproject.toml
 setup.py
-bin/rpkm_heater
 bin/rrap
 bin/rrap_test
 src/rrap/__init__.py

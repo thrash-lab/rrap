@@ -1,14 +1,14 @@
 from setuptools import setup
 
 setup(name='rrap',
-      version='1.2.2',
+      version='1.3.0',
       description='A metagenomic read recruitment data pipeline',
       url='https://github.com/Kojiconner/rrap_metag_pkg/',
       author='Conner Kojima',
       author_email='cykojima@usc.edu',
       license='MIT',
       packages=['rrap'],
-      scripts=['bin/rrap', 'bin/rpkm_heater', 'bin/rrap_test'],
+      scripts=['bin/rrap', 'bin/rrap_test'],
       install_requires=[
         "joblib==0.16.0",
         "scikit-learn==0.23.1",
