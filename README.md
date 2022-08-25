@@ -23,7 +23,7 @@ on each line.
 The quickest way to get started with *RRAP* is to run the command `rrap_test`
 through the terminal. The terminal will automatically run the command: 
 `rrap -i  <path_to_test_data_dir>/metaG_paths.txt -rg <path_to_test_data_dir>/reference
- -o <path_to_test_data_dir>/output -n test --merge-contigs --extra-vis -suffix 
+ -o <path_to_test_data_dir>/output -n test --merge-contigs -suffix 
 _toy_R1.fastq` which will walk the user through processing a sample dataset. In
 addition, the program will run some tests to ensure that *RRAP* is running as
 intended. The sample dataset contains the following reference genomes: HIMB59 and 

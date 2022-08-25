@@ -24,6 +24,7 @@ tests/metaGs/dir_02/SRR11803378_toy_R1.fastq
 tests/metaGs/dir_02/SRR11803378_toy_R2.fastq
 tests/output/allgenomes_cat_test.fna
 tests/output/allgenomes_cat_val.fna
+tests/output/total_reads_val.csv
 tests/output/bam/test/ERR864077.bam
 tests/output/bam/test/ERR864077.bam.bai
 tests/output/bam/test/SRR11803378.bam
