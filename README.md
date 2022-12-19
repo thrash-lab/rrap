@@ -1,5 +1,5 @@
 ## Overview
-*RRAP* is a bionformatics pipeline that aligns reads from metagenomes to reference
+*RRAP* is a bioinformatics pipeline that aligns reads from metagenomes to reference
 genomes. *RRAP* uses the following programs: bowtie2 and SAMTools. It
 essentially acts a wrapper that handles the logistics of read recruitment and walks
 the user through the process of concatenating genomes, creating an index, aligning
